@@ -2,7 +2,7 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../../../:\workspace\Courses\Java\SE330.L11_LibraryManagement\.idea/dataSources/
+/../../../../../../../:\workspace\Courses\Java\SE330.L11_LibraryManagement\Client\.idea/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
