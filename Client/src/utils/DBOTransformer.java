@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.*;
 import java.util.function.*;
@@ -104,9 +105,36 @@ public class DBOTransformer {
     }
 
 
-    // =======================
-    // PARSING OBJECT
-    // =======================
+    // ==========================
+    // SERIALIZE TO UPDATE QUERY
+    // ==========================
+    public <T extends BaseModel> String updateQuerySerialize(T targetObject) throws TransformException {
+        try {
+            var cls = targetObject.getClass();
+            var fieldMap = getFieldMap(targetObject);
+            var tableName = cls.getAnnotation(TableModel.Table.class).tableName();
+
+            var updateStatements = fieldMap.entrySet().stream().map(entry -> {
+                var valueEntry = entry.getValue();
+                var valueExpression = parseToSqlValueExpression(valueEntry.getValue(), valueEntry.getKey());
+                return String.format("%s=%s", entry.getValue(), valueExpression);
+            }).collect(Collectors.toList());
+
+            var pattern = " UPDATE %s SET %s WHERE %s;";
+            return String.format(pattern, tableName, String.join(",", updateStatements));
+
+        } catch (Exception ex) {
+            throw new TransformException("Cannot serialize.");
+        }
+    }
+
+
+    // ==========================
+    // SERIALIZE TO SELECT QUERY
+    // ==========================
+    //
+    // Only get nested object.
+    // No list nested object available.
     public <T extends BaseModel> String selectQuerySerialize(Class<T> cls) throws TransformException {
         return selectQuerySerialize(cls, () -> "");
     }
@@ -199,5 +227,183 @@ public class DBOTransformer {
 
         return new ArrayList<String>(selectKeys);
     }
+
+
+    // ==========================
+    // SERIALIZE TO INSERT QUERY
+    // ==========================
+    public <T extends BaseModel> String insertQuerySerialize(T targetObject) throws TransformException{
+        try {
+            var cls = targetObject.getClass();
+            var fieldMap = getFieldMap(targetObject);
+            var tableName = cls.getAnnotation(TableModel.Table.class).tableName();
+
+            // Query string
+            var keys = String.join(",", fieldMap.keySet());
+            var values = fieldMap.values().stream().map(entry -> {
+                return parseToSqlValueExpression(entry.getValue(), entry.getKey());
+            }).collect(Collectors.toList());
+
+            return new StringBuilder().append("INSERT INTO ")
+                    .append(tableName)
+                    .append(" (")
+                    .append(String.join(",", keys))
+                    .append(" ) VALUES (")
+                    .append(String.join(",", values))
+                    .append(");")
+            .toString();
+
+        } catch (Exception ex) {
+            throw new TransformException("Cannot serialize.");
+        }
+    }
+
+
+    private <T> HashMap<String, Map.Entry<Class<?>, Object>> getFieldMap(T targetObject) throws IllegalAccessException {
+        var cls = targetObject.getClass();
+        var fieldMap = new HashMap<String, Map.Entry<Class<?>, Object>>();
+        // Insert forein object first
+        for (var field: cls.getDeclaredFields()) {
+            field.setAccessible(true);
+            for (var anno: field.getAnnotations()) {
+                // Just ignore NestedModel
+                // Serialize field
+                if (anno instanceof TableModel.Column) {
+                    var fieldType = field.getType();
+                    var fieldValue = field.get(targetObject);
+                    var fieldName = field.getName();
+                    var entry = new FieldEntry(fieldType, fieldValue);
+                    if (!fieldName.equals("id")) {
+                        fieldMap.put(fieldName, entry);
+                    }
+                }
+            }
+        }
+        return fieldMap;
+    }
+
+
+    // Try to insert with unexisted nested model.
+    // Not resolved yet
+    /*
+    public <T extends BaseModel> void insertQuerySerialize(T targetObject, ArrayList<String> insertQueries) throws TransformException{
+        try {
+            var cls = targetObject.getClass();
+            var fieldMap = new HashMap<String, Map.Entry<Class<?>, Object>>();
+            var tableName = cls.getAnnotation(TableModel.Table.class).tableName();
+
+            var foreignKeys = new ArrayList<String>();
+
+            // Insert forein object first
+            for (var field: cls.getDeclaredFields()) {
+                field.setAccessible(true);
+                for (var anno: field.getAnnotations()) {
+
+                    // Recursive add insert queries for nested object.
+                    if (anno instanceof TableModel.NestedModel) {
+                        // Check if need inserted.
+                        var nestedObject = (BaseModel)field.get(targetObject);
+                        if (nestedObject != null) {
+                            var nestedIDField = nestedObject.getClass().getField("id");
+                            nestedIDField.setAccessible(true);
+                            var nestedId = nestedIDField.getInt(nestedObject);
+
+                            if (nestedId != 0) {
+                                insertQuerySerialize(nestedObject, insertQueries);
+                            }
+
+                            var key = ((TableModel.NestedModel)anno).refColumn();
+                            foreignKeys.add(key);
+                        }
+                    }
+
+                    // Fields
+                    var fieldType = field.getType();
+                    var fieldValue = field.get(targetObject);
+                    var fieldName = field.getName();
+                    var entry = new FieldEntry(fieldType, fieldValue);
+                    if (foreignKeys.contains(fieldName)) {
+                        fieldMap.put(fieldName, new FieldEntry(String.class, QUESTION_MARK));
+                    } else {
+                        fieldMap.put(fieldName, entry);
+                    }
+
+                }
+            }
+
+            // Query string
+            var builder = new StringBuilder();
+            var keys = String.join(",", fieldMap.keySet());
+            var values = fieldMap.values().stream().map(entry -> {
+                return parseToSqlValueExpression(entry.getValue(), entry.getKey());
+            }).collect(Collectors.toList());
+
+            builder.append("INSERT INTO ")
+                    .append(tableName)
+                    .append(" (")
+                    .append(String.join(",", keys))
+                    .append(" ) VALUES (")
+                    .append(String.join(",", values))
+                    .append(");");
+
+            var query = builder.toString();
+            insertQueries.add(query);
+        } catch (Exception ex) {
+            throw new TransformException("Cannot serialize.");
+        }
+    }
+     */
+
+    private String parseToSqlValueExpression(Object value, Class<?> cls) {
+        if (cls == String.class) {
+            return "\"" + value.toString() + "\"";
+        }
+
+        if (cls == Boolean.class) {
+            var v = (Boolean)value;
+            return v ? "true" : "false";
+        }
+
+        if (cls == int.class) {
+            var v = (int)value;
+            return "" + v;
+        }
+
+        if (cls == Date.class) {
+            var pattern = "yyyy-MM-dd HH:mm:ss";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            var v = (Date)value;
+            return simpleDateFormat.format(v);
+        }
+
+        return null;
+    }
 }
 
+
+final class FieldEntry<K, V> implements Map.Entry<K, V> {
+    private final K key;
+    private V value;
+
+    public FieldEntry(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    @Override
+    public K getKey() {
+        return key;
+    }
+
+    @Override
+    public V getValue() {
+        return value;
+    }
+
+    @Override
+    public V setValue(V value) {
+        V old = this.value;
+        this.value = value;
+        return old;
+    }
+}
