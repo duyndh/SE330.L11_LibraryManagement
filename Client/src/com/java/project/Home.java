@@ -59,17 +59,17 @@ public class Home {
         //table.setTableHeader();
     }
 
-    public static void main(String[] args) {
-
-        var home = new Home();
-        home.BindBooksData(home.booksDataTable);
-
-        var frame = new JFrame("Library Management");
-        frame.setContentPane(home.panelMain);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(1366, 768);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+//    public static void main(String[] args) {
+//
+//        var home = new Home();
+//        home.BindBooksData(home.booksDataTable);
+//
+//        var frame = new JFrame("Library Management");
+//        frame.setContentPane(home.panelMain);
+//        frame.pack();
+//        frame.setVisible(true);
+//        frame.setSize(1366, 768);
+//        frame.setResizable(false);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    }
 }
