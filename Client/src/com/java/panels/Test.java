@@ -1,32 +1,28 @@
-package com.java.project;
+package com.java.panels;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
-public class Home {
+public class Test {
 
     private JPanel panelMain;
+    private JSplitPane splitPane;
+    private JPanel navPanel;
     private JButton dashboardButton;
     private JButton booksButton;
     private JButton activitiesButton;
     private JButton usersButton;
-    private JPanel searchPanel;
-    private JPanel navPanel;
     private JPanel contentPanel;
     private JPanel titlePanel;
-    private JPanel dataPanel;
     private JButton addBookButton;
+    private JLabel booksLabel;
+    private JPanel searchPanel;
     private JButton searchBookButton;
     private JTextField searchBookTextField;
-    private JTable booksDataTable;
-    private JLabel booksLabel;
-    private JScrollPane booksDataScrollPane;
+    private JPanel dataPanel;
+
+    public Test() {}
 
     public void BindBooksData(JTable table) {
 
@@ -57,19 +53,5 @@ public class Home {
 
         table.setModel(model);
         //table.setTableHeader();
-    }
-
-    public static void main(String[] args) {
-
-        var home = new Home();
-        home.BindBooksData(home.booksDataTable);
-
-        var frame = new JFrame("Library Management");
-        frame.setContentPane(home.panelMain);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(1366, 768);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
