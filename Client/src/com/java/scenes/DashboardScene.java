@@ -1,19 +1,28 @@
 package com.java.scenes;
 
-import com.java.panels.Content;
-import com.java.panels.Data;
-import com.java.panels.Header;
 import com.java.project.Utils;
-import jdk.jshell.execution.Util;
 
-public class DashboardScene {
+public class DashboardScene extends AbstractScene{
 
-    private Content _content = new Content();
-
-    public Content get_content() { return _content; }
+    private String _name = "DASHBOARD";
 
     public DashboardScene() {
-        Utils.Log("DashboardScene()");
+        Utils.log("DashboardScene()");
         //
+    }
+
+    @Override
+    public void loadData() {
+        //
+    }
+
+    @Override
+    public void displayCreationPopup() {
+        //
+    }
+
+    @Override
+    public void displayUpdationPopup(int id) {
+
     }
 }

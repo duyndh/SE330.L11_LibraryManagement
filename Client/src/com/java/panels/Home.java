@@ -1,10 +1,7 @@
 package com.java.panels;
 
 import com.java.project.Utils;
-import com.java.scenes.ActivitiesScene;
-import com.java.scenes.BooksScene;
-import com.java.scenes.DashboardScene;
-import com.java.scenes.ReadersScene;
+import com.java.scenes.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,16 +38,24 @@ public class Home {
     };
 
     private SceneEnum _currentScene = SceneEnum.BOOKS;
-    private JButton[] _buttons = new JButton[] { _dashboardButton, _booksButton, _activitiesButton, _readersButton };
+    private JButton[] _buttons = new JButton[] {
+            _dashboardButton,
+            _booksButton,
+            _activitiesButton,
+            _readersButton
+    };
 
-    private DashboardScene _dashboardScene = new DashboardScene();
-    private BooksScene _booksScene = new BooksScene();
-    private ActivitiesScene _activitiesScene = new ActivitiesScene();
-    private ReadersScene _readersScene = new ReadersScene();
+    private AbstractScene[] _scenes = new AbstractScene[] {
+            new DashboardScene(),
+            new BooksScene(),
+            new ActivitiesScene(),
+            new ReadersScene()
+    };
+    //public AbstractScene get_scene(SceneEnum sceneEnum) { return _scenes[sceneEnum.toInt()]; }
+    public AbstractScene get_current_scene() { return _scenes[_currentScene.toInt()]; }
 
     public Home() {
-
-        Utils.Log("Home()");
+        Utils.log("Home()");
 
         _dashboardButton.addActionListener(new ActionListener() {
             @Override
@@ -80,29 +85,14 @@ public class Home {
 
     public void loadScene(SceneEnum sceneEnum) {
 
-        Utils.Log("Load " + sceneEnum.name());
+        Utils.log("Load " + sceneEnum.name());
 
         _buttons[_currentScene.toInt()].setBackground(_navPanel.getBackground());
         _currentScene = sceneEnum;
         _buttons[_currentScene.toInt()].setBackground(Color.CYAN);
 
-        switch (sceneEnum)
-        {
-            case DASHBOARD:
-                Utils.setChildPanel(_contentPanel, _dashboardScene.get_content().get_contentPanel());
-                break;
-            case BOOKS:
-                Utils.setChildPanel(_contentPanel, _booksScene.get_content().get_contentPanel());
-                _booksScene.loadData();
-                break;
-            case ACTIVITIES:
-                Utils.setChildPanel(_contentPanel, _activitiesScene.get_content().get_contentPanel());
-                break;
-            case READERS:
-                Utils.setChildPanel(_contentPanel, _readersScene.get_content().get_contentPanel());
-                _readersScene.loadData();
-                break;
-        }
+        Utils.setChildPanel(_contentPanel, _scenes[sceneEnum.toInt()].get_content().get_contentPanel());
+        _scenes[sceneEnum.toInt()].loadData();
 
         _contentPanel.updateUI();
     }

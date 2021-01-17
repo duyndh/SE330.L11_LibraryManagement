@@ -6,11 +6,13 @@ import javax.swing.*;
 
 public class Main {
 
+    private static Home _home = new Home();
+    public static Home get_home() { return _home; }
+
     public static void main(String[] args) {
 
-        var home = new Home();
         var frame = new JFrame("Library Management");
-        frame.setContentPane(home.get_homePanel());
+        frame.setContentPane(_home.get_homePanel());
         frame.pack();
         frame.setVisible(true);
         frame.setSize(1366, 768);

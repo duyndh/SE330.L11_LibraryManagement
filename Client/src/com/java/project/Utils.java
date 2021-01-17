@@ -1,24 +1,23 @@
 package com.java.project;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class Utils {
 
     public static void setChildPanel(JPanel parent, JPanel child) {
-        Utils.Log("<-");
+        Utils.log("<-");
 
         parent.removeAll();
         parent.setLayout(new CardLayout());
         parent.add(child);
     }
 
-    public static void Log(String msg) {
+    public static void log(String msg) {
         //System.out.println(msg);
     }
 
-    public static void BindDataToTable(String[] columnNames, Object[][] data, JTable table) {
+    public static void bindDataToTable(String[] columnNames, Object[][] data, JTable table) {
         table.setModel(new JTable(data, columnNames).getModel());
 
 //        final Class[] columnClass = new Class[] {
@@ -42,5 +41,17 @@ public class Utils {
 
         //table = new JTable(model);
         //this.add(new JScrollPane(table));
+    }
+
+    public static JTextField addLabelAndTextField(JPanel panel, String labelName, String text) {
+        panel.add(new JLabel(labelName));
+        var textField = new JTextField(text);
+        panel.add(textField);
+
+        return textField;
+    }
+
+    public static void ShowMessageBox(String message, String title, int type) {
+        JOptionPane.showMessageDialog(null, message, title, type);
     }
 }

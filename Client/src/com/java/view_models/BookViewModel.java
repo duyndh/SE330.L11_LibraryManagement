@@ -8,11 +8,11 @@ public class BookViewModel {
     public String categories;
     public String authors;
     public String publisher;
-    public Date publishedDate;
+    public String publishedDate;
     public int price;
 
-    public BookViewModel(int id_, String title_, String categories_, String authors_, String publisher_, Date publishedDate_, int price_) {
-        id = id;
+    public BookViewModel(int id_, String title_, String categories_, String authors_, String publisher_, String publishedDate_, int price_) {
+        id = id_;
         title = title_;
         categories = categories_;
         authors = authors_;

@@ -3,7 +3,6 @@ package com.java.panels;
 import com.java.project.Utils;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Content {
     private JPanel _contentPanel;
@@ -15,7 +14,7 @@ public class Content {
     public JPanel get_contentPanel() { return _contentPanel; }
 
     public Content() {
-        Utils.Log("Content()");
+        Utils.log("Content()");
 
         //_contentPanel.setBackground(Color.CYAN);
     }
