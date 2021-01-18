@@ -1,7 +1,7 @@
 package data.DAOs;
 
 
-import data.Models.BaseModel;
+import UI.Models.BaseModel;
 import utils.DB.*;
 
 import java.sql.SQLException;

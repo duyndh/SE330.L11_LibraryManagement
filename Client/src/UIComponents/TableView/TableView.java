@@ -1,4 +1,4 @@
-package UI.TableView;
+package UIComponents.TableView;
 
 import javax.swing.*;
 import javax.swing.event.TableModelListener;

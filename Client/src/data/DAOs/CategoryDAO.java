@@ -1,6 +1,6 @@
 package data.DAOs;
 
-import data.Models.CategoryModel;
+import UI.Models.CategoryModel;
 
 public class CategoryDAO extends BaseDAO<CategoryModel> {
     public CategoryDAO() {

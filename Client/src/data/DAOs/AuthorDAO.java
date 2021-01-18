@@ -1,6 +1,5 @@
 package data.DAOs;
-
-import data.Models.*;
+import UI.Models.*;
 
 public class AuthorDAO extends BaseDAO<AuthorModel> {
     public AuthorDAO() {

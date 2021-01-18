@@ -1,4 +1,4 @@
-package UI.TableView;
+package UIComponents.TableView;
 
 public abstract class TableViewRowItem {
 

@@ -1,4 +1,4 @@
-package UI.TableView;
+package UIComponents.TableView;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

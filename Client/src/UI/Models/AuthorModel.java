@@ -1,8 +1,6 @@
-package data.Models;
-
+package UI.Models;
 
 import utils.DB.TableModel;
-
 
 @TableModel.Table(tableName="author")
 public class AuthorModel extends BaseModel {

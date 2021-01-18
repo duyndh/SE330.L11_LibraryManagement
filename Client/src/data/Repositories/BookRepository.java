@@ -1,7 +1,7 @@
 package data.Repositories;
-import data.DAOs.*;
-import data.Models.*;
 
+import UI.Models.BookModel;
+import data.DAOs.BookDAO;
 
 public class BookRepository extends BaseRepository<BookModel> {
     public BookRepository() {

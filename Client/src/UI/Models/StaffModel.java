@@ -1,19 +1,20 @@
-package data.Models;
+package UI.Models;
 
 import utils.DB.TableModel;
 
 import java.util.Date;
 
-@TableModel.Table(tableName = "member")
-public class MemberModel extends BaseModel {
+@TableModel.Table(tableName = "staff")
+public class StaffModel extends BaseModel {
 
-    public MemberModel() { }
+    public StaffModel() {
+    }
 
     @TableModel.Column(columnName = "id")
     private int id;
 
     @TableModel.Column(columnName = "full_name")
-    private String fullName;
+    private String fulName;
 
     @TableModel.Column(columnName = "phone")
     private String phone;
@@ -23,9 +24,6 @@ public class MemberModel extends BaseModel {
 
     @TableModel.Column(columnName = "gender")
     private String gender;
-
-    @TableModel.Column(columnName = "is_active")
-    private boolean isActive;
 
     @TableModel.Column(columnName = "created_at")
     private Date createdAt;
@@ -45,12 +43,12 @@ public class MemberModel extends BaseModel {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFulName() {
+        return fulName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFulName(String fulName) {
+        this.fulName = fulName;
     }
 
     public String getPhone() {
@@ -75,14 +73,6 @@ public class MemberModel extends BaseModel {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public Date getCreatedAt() {

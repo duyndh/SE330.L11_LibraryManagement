@@ -1,6 +1,6 @@
 package data.DAOs;
 
-import data.Models.StaffModel;
+import UI.Models.StaffModel;
 
 public class StaffDAO extends BaseDAO<StaffModel> {
     public StaffDAO() {

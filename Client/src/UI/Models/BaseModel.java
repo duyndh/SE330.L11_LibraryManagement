@@ -1,8 +1,6 @@
-package data.Models;
+package UI.Models;
 
 
 public abstract class BaseModel {
     public BaseModel() {}
 }
-
-

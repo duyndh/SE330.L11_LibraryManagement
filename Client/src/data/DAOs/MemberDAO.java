@@ -1,6 +1,6 @@
 package data.DAOs;
 
-import data.Models.MemberModel;
+import UI.Models.MemberModel;
 
 public class MemberDAO extends BaseDAO<MemberModel> {
     public MemberDAO() {

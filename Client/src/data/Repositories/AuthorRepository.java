@@ -1,7 +1,7 @@
 package data.Repositories;
 
 import data.DAOs.AuthorDAO;
-import data.Models.AuthorModel;
+import UI.Models.AuthorModel;
 
 public class AuthorRepository extends BaseRepository<AuthorModel> {
     public AuthorRepository() {

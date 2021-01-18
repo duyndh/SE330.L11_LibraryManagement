@@ -1,9 +1,10 @@
-package UI;
+package UIComponents;
 
-import UI.TableView.TableView;
-import UI.TableView.TableViewDelegate;
-import UI.TableView.TableViewRowItem;
-import UI.TableView.TableViewRowItemColumn;
+import UI.Views.BooksScene;
+import UIComponents.TableView.TableView;
+import UIComponents.TableView.TableViewDelegate;
+import UIComponents.TableView.TableViewRowItem;
+import UIComponents.TableView.TableViewRowItemColumn;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +17,16 @@ public class TestMainFrame extends Frame {
     public TestMainFrame() {
         add(rootPanel);
         displayPanel.setBackground(Color.cyan);
-        displayPanel.add(tableView);
+
+        var s = new BooksScene();
+        s.setBackground(Color.ORANGE);
+        s.tableView.setDelegate(new TableViewTestDelegate());
+        s.tableView.reloadData();
+        displayPanel.add(s);
         displayPanel.updateUI();
 
-        this.tableView.setDelegate(new TableViewTestDelegate());
-        this.tableView.reloadData();
+//        this.tableView.setDelegate(new TableViewTestDelegate());
+//        this.tableView.reloadData();
     }
 }
 

@@ -1,4 +1,4 @@
-package data.Models;
+package UI.Models;
 
 import utils.DB.TableModel;
 

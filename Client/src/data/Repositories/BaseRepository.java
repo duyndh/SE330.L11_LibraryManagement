@@ -1,7 +1,7 @@
 package data.Repositories;
 
 import data.DAOs.BaseDAO;
-import data.Models.BaseModel;
+import UI.Models.BaseModel;
 
 import java.util.ArrayList;
 

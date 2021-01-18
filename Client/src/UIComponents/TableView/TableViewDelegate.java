@@ -1,4 +1,4 @@
-package UI.TableView;
+package UIComponents.TableView;
 
 public interface TableViewDelegate<T extends TableViewRowItem> {
     public int getRowCount();

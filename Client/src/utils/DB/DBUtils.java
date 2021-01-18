@@ -1,7 +1,6 @@
 package utils.DB;
 
-import data.Models.BaseModel;
-import utils.DB.TransformException;
+import UI.Models.BaseModel;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -403,7 +402,7 @@ public class DBUtils {
             return v ? "true" : "false";
         }
 
-        if (cls == int.class) {
+        if (cls == int.class || cls == Integer.class) {
             var v = (int)value;
             return "" + v;
         }
@@ -415,7 +414,7 @@ public class DBUtils {
             return simpleDateFormat.format(v);
         }
 
-        return null;
+        return value.toString();
     }
 }
 
