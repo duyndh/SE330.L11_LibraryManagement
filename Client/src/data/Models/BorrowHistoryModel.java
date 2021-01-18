@@ -1,6 +1,6 @@
 package data.Models;
 
-import utils.TableModel;
+import utils.DB.TableModel;
 
 import java.util.Date;
 

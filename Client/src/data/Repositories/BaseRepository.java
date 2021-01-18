@@ -3,6 +3,8 @@ package data.Repositories;
 import data.DAOs.BaseDAO;
 import data.Models.BaseModel;
 
+import java.util.ArrayList;
+
 abstract class BaseRepository<T extends BaseModel> {
     protected BaseDAO<T> modelDAO;
 
@@ -24,5 +26,15 @@ abstract class BaseRepository<T extends BaseModel> {
 
     public boolean delete(int id) {
         return modelDAO.delete(id);
+    }
+
+    public ArrayList<T> getAll() {
+        return getAll(-1);
+    }
+
+    public ArrayList<T> getAll(int limit) {
+        return modelDAO.selectAll(builder -> {
+            builder.limit(limit);
+        });
     }
 }

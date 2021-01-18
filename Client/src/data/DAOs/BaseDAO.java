@@ -1,16 +1,13 @@
 package data.DAOs;
 
 
-import com.mysql.cj.xdevapi.Table;
 import data.Models.BaseModel;
-import utils.ConnectionFactory;
-import utils.DBOTransformer;
-import utils.TableModel;
-import utils.TransformException;
+import utils.DB.*;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 interface DAO<T> {
     public T create(T model);
@@ -21,31 +18,19 @@ interface DAO<T> {
 
 public class BaseDAO<T extends BaseModel> implements DAO<T> {
 
-    private final DBOTransformer transformer = new DBOTransformer();
     private Class<T> cls;
 
+    public BaseDAO() { }
     public BaseDAO(Class<T> modelClass) {
         this.cls = modelClass;
     }
-    public BaseDAO() { }
 
 
     @Override
     public T read(int id) {
-        T obj = null;
-        try (
-                var conn = ConnectionFactory.getConnection();
-                var stm = conn.createStatement();
-        ) {
-            String query = this.transformer.selectQuerySerialize(this.cls, () -> "id = " + id);
-            var rs = stm.executeQuery(query);
-            if (rs.next()) {
-                obj = this.transformer.objectFor(cls, rs);
-            }
-        } catch (TransformException | SQLException e) {
-            e.printStackTrace();
-        }
-        return obj;
+        var res = this.selectAll(builder -> builder.where("id", Operator.Equal, id).limit(1));
+        if (res.size() == 0) return null;
+        return res.get(0);
     }
 
 
@@ -55,7 +40,7 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
                 var conn = ConnectionFactory.getConnection();
                 var stm = conn.createStatement();
         ) {
-            var query = this.transformer.insertQuerySerialize(model);
+            var query = DBUtils.insertQuerySerialize(model);
             return performAndReturnUpdatedObject(stm, query);
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
@@ -71,7 +56,7 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
                 var conn = ConnectionFactory.getConnection();
                 var stm = conn.createStatement();
         ) {
-            var query = this.transformer.updateQuerySerialize(model);
+            var query = DBUtils.updateQuerySerialize(model);
             return performAndReturnUpdatedObject(stm, query);
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
@@ -96,6 +81,29 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
             e.printStackTrace();
         }
         return false;
+    }
+
+
+
+    // QUERY BUILDER
+    public ArrayList<T> selectAll(Consumer<SelectBuilder<T>> comsumeSelectBuilder) {
+        var result = new ArrayList<T>();
+        try (
+                var conn = ConnectionFactory.getConnection();
+                var stm = conn.createStatement();
+        ) {
+            var builder = new SelectBuilder<T>(this.cls);
+            comsumeSelectBuilder.accept(builder);
+
+            var query = builder.build();
+            var rs = stm.executeQuery(query);
+            while (rs.next()) {
+                result.add(DBUtils.objectFor(cls, rs));
+            }
+        } catch (TransformException | SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 

@@ -1,7 +1,7 @@
 package data.Models;
 
 
-import utils.TableModel;
+import utils.DB.TableModel;
 
 
 @TableModel.Table(tableName="author")

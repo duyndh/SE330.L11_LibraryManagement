@@ -1,10 +1,7 @@
-package utils;
+package utils.DB;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.*;
 
 public class ConnectionFactory {
 

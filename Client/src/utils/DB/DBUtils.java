@@ -1,6 +1,7 @@
-package utils;
+package utils.DB;
 
 import data.Models.BaseModel;
+import utils.DB.TransformException;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -12,17 +13,17 @@ import java.util.stream.*;
 import java.util.function.*;
 
 
-public class DBOTransformer {
+public class DBUtils {
 
     // =======================
     // PARSING OBJECT
     // =======================
-    public <T extends BaseModel> T objectFor(Class<? extends BaseModel> cls,
+    public static <T extends BaseModel> T objectFor(Class<? extends BaseModel> cls,
                                                     ResultSet rs) throws TransformException {
         return objectFor(cls, rs, "", true);
     }
 
-    private <T extends BaseModel> T objectFor(Class<? extends BaseModel> cls,
+    private static <T extends BaseModel> T objectFor(Class<? extends BaseModel> cls,
                                                      ResultSet rs,
                                                      String prefix_db_label,
                                                      boolean parseNested) throws TransformException {
@@ -64,7 +65,7 @@ public class DBOTransformer {
         }
     }
 
-    private void setValueForField(Field field,
+    private static void setValueForField(Field field,
                                          Object targetObject,
                                          String field_label,
                                          ResultSet rs) throws TransformException {
@@ -108,7 +109,7 @@ public class DBOTransformer {
     // ==========================
     // SERIALIZE TO UPDATE QUERY
     // ==========================
-    public <T extends BaseModel> String updateQuerySerialize(T targetObject) throws TransformException {
+    public static <T extends BaseModel> String updateQuerySerialize(T targetObject) throws TransformException {
         try {
             var cls = targetObject.getClass();
             var fieldMap = getFieldMap(targetObject);
@@ -135,11 +136,20 @@ public class DBOTransformer {
     //
     // Only get nested object.
     // No list nested object available.
-    public <T extends BaseModel> String selectQuerySerialize(Class<T> cls) throws TransformException {
+    public static <T extends BaseModel> String selectQuerySerialize(Class<T> cls) throws TransformException {
         return selectQuerySerialize(cls, () -> "");
     }
 
-    public <T extends BaseModel> String selectQuerySerialize(Class<T> cls, Supplier<String> predicate) throws TransformException {
+    public static <T extends BaseModel> String selectQuerySerialize(Class<T> cls,
+                                                             Supplier<String> predicate) throws TransformException {
+        return selectQuerySerialize(cls, predicate, () -> "", -1, -1);
+    }
+
+    public static <T extends BaseModel> String selectQuerySerialize(Class<T> cls,
+                                                             Supplier<String> predicate,
+                                                             Supplier<String> orderByExpression,
+                                                             int limit,
+                                                             int offset) throws TransformException {
         try {
             var strBuilder = new StringBuilder();
             var queryTableName = cls.getAnnotation(TableModel.Table.class).tableName();
@@ -184,6 +194,29 @@ public class DBOTransformer {
                         .append(pred);
             }
 
+            // order by
+            var orderStm = orderByExpression.get();
+            if (!orderStm.equals("")) {
+                strBuilder
+                        .append(" ORDER BY ")
+                        .append(orderStm);
+            }
+
+            // offset
+            if (offset >= 0) {
+                strBuilder
+                        .append(" LIMIT ")
+                        .append(offset);
+            }
+
+            // limit
+            if (limit >= 0) {
+                strBuilder
+                        .append(" LIMIT ")
+                        .append(limit);
+            }
+
+
             // end query
             strBuilder.append(";");
             return strBuilder.toString();
@@ -193,7 +226,7 @@ public class DBOTransformer {
         }
     }
 
-    private <T extends BaseModel> ArrayList<String> selectKeys(Class<T> cls,
+    private static <T extends BaseModel> ArrayList<String> selectKeys(Class<T> cls,
                                                                       String prefix_db_label,
                                                                       boolean parseNested) throws TransformException {
         var selectKeys = new HashSet<String>();
@@ -232,7 +265,7 @@ public class DBOTransformer {
     // ==========================
     // SERIALIZE TO INSERT QUERY
     // ==========================
-    public <T extends BaseModel> String insertQuerySerialize(T targetObject) throws TransformException{
+    public static <T extends BaseModel> String insertQuerySerialize(T targetObject) throws TransformException{
         try {
             var cls = targetObject.getClass();
             var fieldMap = getFieldMap(targetObject);
@@ -259,7 +292,7 @@ public class DBOTransformer {
     }
 
 
-    private <T> HashMap<String, Map.Entry<Class<?>, Object>> getFieldMap(T targetObject) throws IllegalAccessException {
+    private static <T> HashMap<String, Map.Entry<Class<?>, Object>> getFieldMap(T targetObject) throws IllegalAccessException {
         var cls = targetObject.getClass();
         var fieldMap = new HashMap<String, Map.Entry<Class<?>, Object>>();
         // Insert forein object first
@@ -286,7 +319,7 @@ public class DBOTransformer {
     // Try to insert with unexisted nested model.
     // Not resolved yet
     /*
-    public <T extends BaseModel> void insertQuerySerialize(T targetObject, ArrayList<String> insertQueries) throws TransformException{
+    public static <T extends BaseModel> void insertQuerySerialize(T targetObject, ArrayList<String> insertQueries) throws TransformException{
         try {
             var cls = targetObject.getClass();
             var fieldMap = new HashMap<String, Map.Entry<Class<?>, Object>>();
@@ -354,7 +387,13 @@ public class DBOTransformer {
     }
      */
 
-    private String parseToSqlValueExpression(Object value, Class<?> cls) {
+
+    public static String parseToSqlValueExpression(Object value) {
+        var cls = value.getClass();
+        return parseToSqlValueExpression(value, cls);
+    }
+
+    public static String parseToSqlValueExpression(Object value, Class<?> cls) {
         if (cls == String.class) {
             return "\"" + value.toString() + "\"";
         }
