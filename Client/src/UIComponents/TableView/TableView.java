@@ -28,19 +28,18 @@ public class TableView extends JPanel {
     private TableViewDelegate delegate = null;
 
     public TableView() {
-        setBackground(Color.yellow);
-        setLayout(new CardLayout());
+        super(new BorderLayout());
+        setLayout(new BorderLayout());
 
         // Init sroll view.
         this.scrollPane = new JScrollPane(this.table);
-        this.scrollPane.setLayout(new ScrollPaneLayout());
-        this.table.setBackground(Color.red);
-
+        this.scrollPane.setPreferredSize(new Dimension(640, 450));
+        this.table.setPreferredSize(new Dimension(640, 450));
         this.tableModel = new CustomTableViewModel(() -> {
             return this.delegate;
         });
         this.table.setModel(this.tableModel);
-        this.add(scrollPane);
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     public void reloadData() {
