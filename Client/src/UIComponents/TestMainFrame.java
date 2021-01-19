@@ -58,4 +58,9 @@ class TableViewTestDelegate implements TableViewDelegate<TestItem> {
         item.name = "Vinh";
         return item;
     }
+
+    @Override
+    public void tableViewDidSelectRow(int row) {
+
+    }
 }

@@ -27,6 +27,11 @@ public class SelectBuilder<T extends BaseModel> extends QueryBuilder<T> {
         return (SelectBuilder<T>)super.where(column, operator, value);
     }
 
+    public SelectBuilder<T> where(String statement) {
+        this.whereStatements.add(statement);
+        return this;
+    }
+
     public SelectBuilder<T> limit(int limit) {
         this.limit = limit;
         return this;

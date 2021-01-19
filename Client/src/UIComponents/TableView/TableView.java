@@ -1,6 +1,8 @@
 package UIComponents.TableView;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -30,14 +32,19 @@ public class TableView extends JPanel {
     public TableView() {
         super(new BorderLayout());
         setLayout(new BorderLayout());
-
-        // Init sroll view.
         this.scrollPane = new JScrollPane(this.table);
-        this.scrollPane.setPreferredSize(new Dimension(640, 450));
-        this.table.setPreferredSize(new Dimension(640, 450));
+        // this.scrollPane.setPreferredSize(new Dimension(640, 450));
+        // this.table.setPreferredSize(new Dimension(640, 450));
         this.tableModel = new CustomTableViewModel(() -> {
             return this.delegate;
         });
+
+        this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                delegate.tableViewDidSelectRow(table.getSelectedRow());
+            }
+        });
+
         this.table.setModel(this.tableModel);
         this.add(scrollPane, BorderLayout.CENTER);
     }

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 interface DAO<T> {
-    public T create(T model);
-    public T read(int id);
-    public T update(T model);
-    public boolean delete(int id);
+    public T create(T model) throws SQLException, TransformException;
+    public T read(int id) throws TransformException, SQLException;
+    public T update(T model) throws SQLException, TransformException;
+    public boolean delete(int id) throws SQLException;
 }
 
 public class BaseDAO<T extends BaseModel> implements DAO<T> {
@@ -25,9 +25,13 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
         this.cls = modelClass;
     }
 
+    public String tableName() {
+        return this.cls.getAnnotation(TableModel.Table.class).tableName();
+    }
+
 
     @Override
-    public T read(int id) {
+    public T read(int id) throws TransformException, SQLException {
         var res = this.selectAll(builder -> builder.where("id", Operator.Equal, id).limit(1));
         if (res.size() == 0) return null;
         return res.get(0);
@@ -35,39 +39,31 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
 
 
     @Override
-    public T create(T model) {
+    public T create(T model) throws SQLException, TransformException {
         try (
                 var conn = ConnectionFactory.getConnection();
                 var stm = conn.createStatement();
         ) {
             var query = DBUtils.insertQuerySerialize(model);
             return performAndReturnUpdatedObject(stm, query);
-        } catch (TransformException | SQLException e) {
-            e.printStackTrace();
         }
-
-        return null;
     }
 
 
     @Override
-    public T update(T model) {
+    public T update(T model) throws SQLException, TransformException {
         try (
                 var conn = ConnectionFactory.getConnection();
                 var stm = conn.createStatement();
         ) {
             var query = DBUtils.updateQuerySerialize(model);
             return performAndReturnUpdatedObject(stm, query);
-        } catch (TransformException | SQLException e) {
-            e.printStackTrace();
         }
-
-        return null;
     }
 
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SQLException {
         try (
                 var conn = ConnectionFactory.getConnection();
                 var stm = conn.createStatement();
@@ -77,16 +73,13 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
             var query = String.format(pattern, tableName, id);
             var affectedRows = stm.executeUpdate(query);
             return affectedRows != 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return false;
     }
 
 
 
     // QUERY BUILDER
-    public ArrayList<T> selectAll(Consumer<SelectBuilder<T>> comsumeSelectBuilder) {
+    public ArrayList<T> selectAll(Consumer<SelectBuilder<T>> comsumeSelectBuilder) throws SQLException, TransformException {
         var result = new ArrayList<T>();
         try (
                 var conn = ConnectionFactory.getConnection();
@@ -100,15 +93,13 @@ public class BaseDAO<T extends BaseModel> implements DAO<T> {
             while (rs.next()) {
                 result.add(DBUtils.objectFor(cls, rs));
             }
-        } catch (TransformException | SQLException e) {
-            e.printStackTrace();
         }
         return result;
     }
 
 
     // HELPERS
-    private T performAndReturnUpdatedObject(Statement stm, String query) throws SQLException {
+    private T performAndReturnUpdatedObject(Statement stm, String query) throws SQLException, TransformException {
         var affectedRows = stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
         var id = 0;
 

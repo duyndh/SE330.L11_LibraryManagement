@@ -6,4 +6,6 @@ public interface TableViewDelegate<T extends TableViewRowItem> {
     public Class<?> rowItemClass();
 
     public T itemAt(int row);
+
+    public void tableViewDidSelectRow(int row);
 }
