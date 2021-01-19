@@ -61,5 +61,7 @@ public abstract class BaseController {
 
     abstract void onSearchButtonTapped(String searchText);
 
-    abstract void onClearButtonTapped();
+    void onClearButtonTapped() {
+        this.scene.searchTextField.setText("");
+    };
 }

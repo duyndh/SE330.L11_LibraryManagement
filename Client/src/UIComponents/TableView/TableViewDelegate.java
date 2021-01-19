@@ -7,5 +7,5 @@ public interface TableViewDelegate<T extends TableViewRowItem> {
 
     public T itemAt(int row);
 
-    public void tableViewDidSelectRow(int row);
+    public void tableViewDidSelectRow(int[] row);
 }

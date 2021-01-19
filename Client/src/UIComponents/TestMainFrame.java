@@ -1,6 +1,6 @@
 package UIComponents;
 
-import UI.Views.BooksScene;
+import UI.Views.BookItemScene;
 import UIComponents.TableView.TableView;
 import UIComponents.TableView.TableViewDelegate;
 import UIComponents.TableView.TableViewRowItem;
@@ -18,7 +18,7 @@ public class TestMainFrame extends Frame {
         add(rootPanel);
         displayPanel.setBackground(Color.cyan);
 
-        var s = new BooksScene();
+        var s = new BookItemScene();
         s.setBackground(Color.ORANGE);
         s.tableView.setDelegate(new TableViewTestDelegate());
         s.tableView.reloadData();
@@ -60,7 +60,7 @@ class TableViewTestDelegate implements TableViewDelegate<TestItem> {
     }
 
     @Override
-    public void tableViewDidSelectRow(int row) {
+    public void tableViewDidSelectRow(int[] row) {
 
     }
 }

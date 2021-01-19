@@ -10,28 +10,6 @@ public class WarehouseHistoryModel extends BaseModel {
     public WarehouseHistoryModel() {
     }
 
-    @TableModel.Column(columnName = "id")
-    private int id;
-
-    @TableModel.Column(columnName = "staff_id")
-    private int staffId;
-
-    @TableModel.NestedModel(refColumn = "staff_id")
-    private StaffModel staff;
-
-    @TableModel.Column(columnName = "book_item_id")
-    private int bookItemId;
-
-    @TableModel.NestedModel(refColumn = "book_item_id")
-    private BookItemModel bookItem;
-
-    @TableModel.Column(columnName = "borrowed_at")
-    private Date borrowedAt;
-
-    @TableModel.Column(columnName = "returned_at")
-    private Date returnedAt;
-
-
     public int getId() {
         return id;
     }
@@ -72,19 +50,32 @@ public class WarehouseHistoryModel extends BaseModel {
         this.bookItem = bookItem;
     }
 
-    public Date getBorrowedAt() {
-        return borrowedAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setBorrowedAt(Date borrowedAt) {
-        this.borrowedAt = borrowedAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getReturnedAt() {
-        return returnedAt;
-    }
+    @TableModel.Column(columnName = "id")
+    private int id;
 
-    public void setReturnedAt(Date returnedAt) {
-        this.returnedAt = returnedAt;
-    }
+    @TableModel.Column(columnName = "staff_id")
+    private int staffId;
+
+    @TableModel.NestedModel(refColumn = "staff_id")
+    private StaffModel staff;
+
+    @TableModel.Column(columnName = "book_item_id")
+    private int bookItemId;
+
+    @TableModel.NestedModel(refColumn = "book_item_id")
+    private BookItemModel bookItem;
+
+    @TableModel.Column(columnName = "created_at")
+    private Date createdAt;
+
+
+
 }

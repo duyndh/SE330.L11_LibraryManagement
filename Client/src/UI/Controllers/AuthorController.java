@@ -1,29 +1,27 @@
 package UI.Controllers;
 
-import UI.Models.BookItemModel;
-import UI.Models.BookRowItem;
+import UI.Models.AuthorModel;
+import UI.Models.TableViewItemModel.AuthorRowItem;
 import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
 import com.java.project.InfoEntry;
 import com.java.project.Utils;
-import data.Repositories.BookItemRepository;
-import jdk.jshell.execution.Util;
+import data.Repositories.AuthorRepository;
 import utils.DB.TransformException;
 
-import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
-public class BooksControlller extends BaseController implements TableViewDelegate<BookRowItem> {
+public class AuthorController extends BaseController implements TableViewDelegate<AuthorRowItem> {
 
-    // private final BooksScene booksScene;
-    private final BookItemRepository bookItemRepository = new BookItemRepository();
-    private final ArrayList<BookRowItem> bookRowItems = new ArrayList();
-    private BookRowItem selectedObject = null;
+    private final AuthorRepository repository = new AuthorRepository();
+    private final ArrayList<AuthorRowItem> rowItems = new ArrayList();
+    private HashSet<AuthorRowItem> selectedObjects = new HashSet<>();
 
-    public BooksControlller(BaseScene scene) {
+    public AuthorController(BaseScene scene) {
         super(scene);
         this.scene.setTableViewDelegate(this);
     }
@@ -41,21 +39,21 @@ public class BooksControlller extends BaseController implements TableViewDelegat
 
     @Override
     public void reloadData() {
-        this.bookRowItems.clear();
+        this.rowItems.clear();
         try {
-            this.bookRowItems.addAll(this.bookItemRepository
+            this.rowItems.addAll(this.repository
                     .getAll()
                     .stream()
-                    .map(BookRowItem::new)
+                    .map(AuthorRowItem::new)
                     .collect(Collectors.toList()));
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
             Utils.showError();
         }
 
-        if (bookRowItems.size() == 0) {
-            var item = new BookRowItem();
-            bookRowItems.add(item);
+        if (rowItems.size() == 0) {
+            var item = new AuthorRowItem();
+            rowItems.add(item);
         }
 
         this.scene.reloadTableData();
@@ -65,15 +63,15 @@ public class BooksControlller extends BaseController implements TableViewDelegat
     @Override
     void onCreateTapped() {
         InfoEntry[] infos = {
-                new InfoEntry("BOOK ID", int.class),
+                new InfoEntry("AUTHOR NAME", String.class),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.createPopup(arr, res -> {
-            var item = new BookItemModel();
-            item.setBook_id((int)res.get(0));
+            var item = new AuthorModel();
+            item.setName((String)res.get(0));
             try {
-                this.bookItemRepository.create(item);
+                this.repository.create(item);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -85,17 +83,19 @@ public class BooksControlller extends BaseController implements TableViewDelegat
 
     @Override
     void onUpdatedTapped() {
-        var o = this.selectedObject.getModel();
+        if (this.selectedObjects.size() <= 0) return;
+        var o = this.selectedObjects.stream().findFirst().get().getModel();
+
         InfoEntry[] infos = {
-                new InfoEntry("BOOK ID", o.getBook_id()),
+                new InfoEntry("AUTHOR NAME", o.getName()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            var item = new BookItemModel();
-            item.setBook_id((int)res.get(0));
+            var item = new AuthorModel();
+            item.setName((String)res.get(0));
             try {
-                this.bookItemRepository.update(item);
+                this.repository.update(item);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -107,11 +107,13 @@ public class BooksControlller extends BaseController implements TableViewDelegat
 
     @Override
     void onDeleteTapped() {
-        var id = this.selectedObject.getId();
-        try {
-            this.bookItemRepository.delete(id);
-        } catch (SQLException throwables) {
-            Utils.showError();
+        for (var o: this.selectedObjects) {
+            var id = o.getId();
+            try {
+                this.repository.delete(id);
+            } catch (SQLException throwables) {
+                Utils.showError();
+            }
         }
         this.reloadData();
     }
@@ -122,43 +124,46 @@ public class BooksControlller extends BaseController implements TableViewDelegat
     //
     @Override
     public int getRowCount() {
-        return this.bookRowItems.size();
+        return this.rowItems.size();
     }
 
     @Override
     public Class<?> rowItemClass() {
-        return BookRowItem.class;
+        return AuthorRowItem.class;
     }
 
     @Override
-    public BookRowItem itemAt(int row) {
-        return this.bookRowItems.get(row);
+    public AuthorRowItem itemAt(int row) {
+        return this.rowItems.get(row);
     }
 
     @Override
-    public void tableViewDidSelectRow(int row) {
-        if (this.bookRowItems.size() > 0 && row > -1) {
-            this.selectedObject = this.bookRowItems.get(row);
+    public void tableViewDidSelectRow(int[] rows) {
+        if (this.rowItems.size() > 0 && rows.length > 0) {
+            this.selectedObjects.clear();
+            for (var i: rows) {
+                this.selectedObjects.add(this.rowItems.get(i));
+            }
         }
     }
 
     @Override
     void onSearchButtonTapped(String searchText) {
-        this.bookRowItems.clear();
+        this.rowItems.clear();
         try {
-            this.bookRowItems.addAll(this.bookItemRepository
+            this.rowItems.addAll(this.repository
                     .searchName(searchText)
                     .stream()
-                    .map(BookRowItem::new)
+                    .map(AuthorRowItem::new)
                     .collect(Collectors.toList()));
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
             Utils.showError();
         }
 
-        if (bookRowItems.size() == 0) {
-            var item = new BookRowItem();
-            bookRowItems.add(item);
+        if (rowItems.size() == 0) {
+            var item = new AuthorRowItem();
+            rowItems.add(item);
         }
 
         this.scene.reloadTableData();
@@ -167,5 +172,6 @@ public class BooksControlller extends BaseController implements TableViewDelegat
     @Override
     void onClearButtonTapped() {
         this.reloadData();
+        super.onClearButtonTapped();
     }
 }

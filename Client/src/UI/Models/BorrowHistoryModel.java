@@ -8,7 +8,7 @@ import java.util.Date;
 @TableModel.Table(tableName="borrow_history")
 public class BorrowHistoryModel extends BaseModel {
 
-    private BorrowHistoryModel() { }
+    public BorrowHistoryModel() { }
 
     @TableModel.Column(columnName="id")
     private int id;

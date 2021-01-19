@@ -1,10 +1,17 @@
-package UI.Models;
+package UI.Models.TableViewItemModel;
 
-import UI.Models.BookItemModel;
+import UI.Models.BookModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
 public class BookRowItem extends TableViewRowItem {
+
+    public BookModel getModel() {
+        return model;
+    }
+
+    private BookModel model;
+
     public int getId() {
         return id;
     }
@@ -33,16 +40,12 @@ public class BookRowItem extends TableViewRowItem {
     @TableViewRowItemColumn(columnName = "Category")
     private String category = null;
 
-    private BookItemModel model;
-
-    public BookItemModel getModel() { return model; }
-
-    public BookRowItem(BookItemModel bookItem) {
-        this.id = bookItem.getId();
-        this.name = bookItem.getBook().getName();
-        this.author = bookItem.getBook().getAuthor().getName();
-        this.category = bookItem.getBook().getCategory().getName();
-        this.model = bookItem;
+    public BookRowItem(BookModel model) {
+        this.id = model.getId();
+        this.name = model.getName();
+        this.author = model.getAuthor().getName();
+        this.category = model.getCategory().getName();
+        this.model = model;
     }
 
     public BookRowItem() {

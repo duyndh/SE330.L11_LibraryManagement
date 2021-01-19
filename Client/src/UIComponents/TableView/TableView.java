@@ -41,7 +41,7 @@ public class TableView extends JPanel {
 
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
-                delegate.tableViewDidSelectRow(table.getSelectedRow());
+                delegate.tableViewDidSelectRow(table.getSelectedRows());
             }
         });
 

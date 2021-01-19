@@ -30,7 +30,7 @@ public class BooksScene extends AbstractScene {
     private List<Object[]> _tableData = new ArrayList<Object[]>();
 
     public BooksScene() {
-        Utils.log("BooksScene()");
+        Utils.log("BookItemScene()");
 
         Utils.setChildPanel(_content.get_headerPanel(), _header.get_headerPanel());
         Utils.setChildPanel(_content.get_dataPanel(), _data.get_dataPanel());
