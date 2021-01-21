@@ -181,7 +181,7 @@ public class Utils {
             }
 
             // another types
-            var cls = info.getValue().getClass();
+            var cls = info.getCls();
             if (cls == String.class) {
                 panel.add(new JLabel(info.getLabel()));
                 var textField = new JTextField("");
@@ -206,6 +206,7 @@ public class Utils {
                 JDatePanel datePanel = new JDatePanel(model);
                 JDatePicker datePicker = new JDatePicker(model);
                 model.setValue((java.util.Date) info.getValue());
+                panel.add(datePicker);
                 uis.add(datePicker);
             }
 
@@ -224,17 +225,17 @@ public class Utils {
             for (int i = 0; i < uis.size(); i++) {
                 var cls = infos.get(i).getCls();
                 if (cls == String.class) {
-                    var ui = uis.get(0);
+                    var ui = uis.get(i);
                     var r = ((JTextField)ui).getText();
                     res.add(r);
                 }
                 if (cls == int.class || cls == Integer.class) {
-                    var ui = uis.get(0);
+                    var ui = uis.get(i);
                     var r = ((JSpinner)ui).getValue();
                     res.add(r);
                 }
                 if (cls == Date.class) {
-                    var ui = uis.get(0);
+                    var ui = uis.get(i);
                     var r = ((JDatePicker)ui).getModel().getValue(); // return Date
                     res.add(r);
                 }

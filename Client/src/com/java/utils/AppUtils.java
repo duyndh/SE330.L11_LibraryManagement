@@ -10,8 +10,8 @@ public class AppUtils {
         return matcher.find();
     }
 
-    public static boolean validatePhoneNumber(String emailStr) {
-        Matcher matcher = Pattern.compile("^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$", Pattern.CASE_INSENSITIVE).matcher(emailStr);
+    public static boolean validatePhoneNumber(String phoneStr) {
+        Matcher matcher = Pattern.compile("^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$", Pattern.CASE_INSENSITIVE).matcher(phoneStr);
         return matcher.find();
     }
 }

@@ -116,7 +116,7 @@ public class DBUtils {
 
             var updateStatements = fieldMap.entrySet().stream()
                     .filter(entry -> {
-                        return entry.getValue() != null;
+                        return entry.getValue().getValue() != null;
                     })
                     .map(entry -> {
                         var valueEntry = entry.getValue();

@@ -6,6 +6,7 @@ import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
 import com.java.project.InfoEntry;
 import com.java.project.Utils;
+import com.java.utils.AppUtils;
 import data.Repositories.StaffRepository;
 import utils.DB.TransformException;
 
@@ -71,6 +72,23 @@ public class StaffController extends BaseController implements TableViewDelegate
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.createPopup(arr, res -> {
+
+            // Validate
+            var phone = (String)res.get(1);
+            if (AppUtils.validatePhoneNumber(phone)) {
+                Utils.showError("Invalid phone number.");
+                onCreateTapped();
+                return;
+            }
+            var email = (String)res.get(2);
+            if (AppUtils.validateEmail(email)) {
+                Utils.showError("Invalid email number.");
+                onCreateTapped();
+                return;
+            }
+
+            //
+            //
             var item = new StaffModel();
             item.setFullName((String)res.get(0));
             item.setPhone((String)res.get(1));
@@ -100,6 +118,24 @@ public class StaffController extends BaseController implements TableViewDelegate
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
+
+            // Validate
+            var phone = (String)res.get(1);
+            if (AppUtils.validatePhoneNumber(phone)) {
+                Utils.showError("Invalid phone number.");
+                onUpdatedTapped();
+                return;
+            }
+            var email = (String)res.get(2);
+            if (AppUtils.validateEmail(email)) {
+                Utils.showError("Invalid email number.");
+                onUpdatedTapped();
+                return;
+            }
+
+
+            //
+            //
             o.setFullName((String)res.get(0));
             o.setPhone((String)res.get(1));
             o.setEmail((String)res.get(2));

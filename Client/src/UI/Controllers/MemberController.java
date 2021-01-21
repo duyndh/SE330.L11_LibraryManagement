@@ -6,6 +6,7 @@ import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
 import com.java.project.InfoEntry;
 import com.java.project.Utils;
+import com.java.utils.AppUtils;
 import data.Repositories.MemberRepository;
 import utils.DB.TransformException;
 
@@ -71,9 +72,28 @@ public class MemberController extends BaseController implements TableViewDelegat
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.createPopup(arr, res -> {
+
+            // Validate
+            var phone = (String)res.get(1);
+            if (AppUtils.validatePhoneNumber(phone)) {
+                Utils.showError("Invalid phone number.");
+                onCreateTapped();
+                return;
+            }
+            var email = (String)res.get(2);
+            if (AppUtils.validateEmail(email)) {
+                Utils.showError("Invalid email number.");
+                onCreateTapped();
+                return;
+            }
+
+
+            //
+            //
+            //
             var item = new MemberModel();
             item.setFullName((String)res.get(0));
-            item.setPhone((String)res.get(1));
+            item.setPhone(phone);
             item.setEmail((String)res.get(2));
             try {
                 this.repository.create(item);
@@ -92,15 +112,33 @@ public class MemberController extends BaseController implements TableViewDelegat
         var o = this.selectedObjects.stream().findFirst().get().getModel();
 
         InfoEntry[] infos = {
-                new InfoEntry("MEMBER NAME", o.getFullName()),
-                new InfoEntry("MEMBER PHONE", o.getPhone()),
-                new InfoEntry("MEMBER EMAIL", o.getEmail()),
-                new InfoEntry("CREATED AT", o.getCreatedAt()),
-                new InfoEntry("EXPIRED AT", o.getExpiredAt()),
+                new InfoEntry("MEMBER NAME", String.class, o.getFullName()),
+                new InfoEntry("MEMBER PHONE", String.class, o.getPhone()),
+                new InfoEntry("MEMBER EMAIL", String.class, o.getEmail()),
+                new InfoEntry("CREATED AT", Date.class, o.getCreatedAt()),
+                new InfoEntry("EXPIRED AT", Date.class, o.getExpiredAt()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
+
+            // Validate
+            var phone = (String)res.get(1);
+            if (!AppUtils.validatePhoneNumber(phone)) {
+                Utils.showError("Invalid phone number.");
+                onUpdatedTapped();
+                return;
+            }
+            var email = (String)res.get(2);
+            if (!AppUtils.validateEmail(email)) {
+                Utils.showError("Invalid email number.");
+                onUpdatedTapped();
+                return;
+            }
+
+
+            //
+            //
             o.setFullName((String)res.get(0));
             o.setPhone((String)res.get(1));
             o.setEmail((String)res.get(2));

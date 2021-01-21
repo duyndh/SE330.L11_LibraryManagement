@@ -1,11 +1,27 @@
 package com.java.panels;
 
+import data.Repositories.StaffRepository;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.function.Consumer;
 
 public class LoginPanel {
 
     private JPanel _panel;
+    private StaffRepository staffRepository = new StaffRepository();
+
+    public Consumer<Boolean> getLoginResultHandler() {
+        return loginResultHandler;
+    }
+
+    public void setLoginResultHandler(Consumer<Boolean> loginResultHandler) {
+        this.loginResultHandler = loginResultHandler;
+    }
+
+    private Consumer<Boolean> loginResultHandler;
 
     public LoginPanel() {
 
@@ -46,6 +62,14 @@ public class LoginPanel {
         constraints.gridx = 0;
         constraints.gridy = 2;
         _panel.add(loginButton, constraints);
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                var res = (staffRepository.login(usernameTextField.getText(), passwordTextField.getText()));
+                loginResultHandler.accept(res);
+            }
+        });
     }
 
     public JPanel get_panel() {

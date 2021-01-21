@@ -22,6 +22,12 @@ public class StaffModel extends BaseModel {
     @TableModel.Column(columnName = "email")
     private String email;
 
+    public String getPassword() {
+        return password;
+    }
+
+    @TableModel.Column(columnName = "password")
+    private String password;
 
     @TableModel.Column(columnName = "created_at")
     private Date createdAt = new Date();
