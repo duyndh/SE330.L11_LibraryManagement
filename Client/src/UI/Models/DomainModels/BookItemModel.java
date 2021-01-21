@@ -1,6 +1,8 @@
-package UI.Models;
+package UI.Models.DomainModels;
 
 import utils.DB.TableModel;
+
+import java.util.Date;
 
 @TableModel.Table(tableName = "book_item")
 public class BookItemModel extends BaseModel {
@@ -15,6 +17,16 @@ public class BookItemModel extends BaseModel {
 
     @TableModel.NestedModel(refColumn = "book_id")
     private BookModel book;
+
+    public BorrowHistoryModel getBorrowHistory() {
+        return borrowHistory;
+    }
+
+    public void setBorrowHistory(BorrowHistoryModel borrowHistory) {
+        this.borrowHistory = borrowHistory;
+    }
+
+    private BorrowHistoryModel borrowHistory;
 
     public int getId() {
         return id;
@@ -39,4 +51,18 @@ public class BookItemModel extends BaseModel {
     public void setBook(BookModel book) {
         this.book = book;
     }
+
+
+    public boolean isAvailable() {
+        if (borrowHistory == null) {
+            return true;
+        }
+
+        if (borrowHistory.getReturnedAt() == null) {
+            return false;
+        }
+
+        return borrowHistory.getReturnedAt().getTime() < new Date().getTime();
+    }
+
 }

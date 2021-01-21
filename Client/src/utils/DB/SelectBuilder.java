@@ -1,6 +1,6 @@
 package utils.DB;
 
-import UI.Models.BaseModel;
+import UI.Models.DomainModels.BaseModel;
 
 import java.util.ArrayList;
 

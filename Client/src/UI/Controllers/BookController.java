@@ -1,6 +1,8 @@
 package UI.Controllers;
 
-import UI.Models.BookModel;
+import UI.Models.DomainModels.AuthorModel;
+import UI.Models.DomainModels.BookModel;
+import UI.Models.DomainModels.CategoryModel;
 import UI.Models.TableViewItemModel.BookRowItem;
 import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
@@ -62,13 +64,10 @@ public class BookController extends BaseController implements TableViewDelegate<
 
     @Override
     void onCreateTapped() {
-        if (this.selectedObjects.size() <= 0) return;
-        var o = this.selectedObjects.stream().findFirst().get().getModel();
-
         InfoEntry[] infos = {
                 new InfoEntry("BOOK NAME", String.class),
-                new InfoEntry("AUTHOR ID", Integer.class),
-                new InfoEntry("CATEGORY ID", Integer.class),
+                new InfoEntry("AUTHOR ID", AuthorModel.class),
+                new InfoEntry("CATEGORY ID", CategoryModel.class),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
@@ -95,18 +94,17 @@ public class BookController extends BaseController implements TableViewDelegate<
 
         InfoEntry[] infos = {
                 new InfoEntry("BOOK NAME", o.getName()),
-                new InfoEntry("AUTHOR ID", o.getAuthorId()),
-                new InfoEntry("CATEGORY ID", o.getCategoryId()),
+                new InfoEntry("AUTHOR ID", AuthorModel.class, o.getAuthorId()),
+                new InfoEntry("CATEGORY ID", CategoryModel.class, o.getCategoryId()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            var item = new BookModel();
-            item.setName((String)res.get(0));
-            item.setAuthorId((Integer) res.get(1));
-            item.setCategoryId((Integer)res.get(2));
+            o.setName((String)res.get(0));
+            o.setAuthorId((Integer) res.get(1));
+            o.setCategoryId((Integer)res.get(2));
             try {
-                this.repository.update(item);
+                this.repository.update(o);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -123,7 +121,7 @@ public class BookController extends BaseController implements TableViewDelegate<
             try {
                 this.repository.delete(id);
             } catch (SQLException throwables) {
-                Utils.showError();
+                Utils.showError(throwables.getMessage());
             }
         }
         this.reloadData();

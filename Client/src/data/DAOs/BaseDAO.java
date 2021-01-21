@@ -1,7 +1,7 @@
 package data.DAOs;
 
 
-import UI.Models.BaseModel;
+import UI.Models.DomainModels.BaseModel;
 import utils.DB.*;
 
 import java.sql.SQLException;
@@ -19,6 +19,7 @@ interface DAO<T> {
 public class BaseDAO<T extends BaseModel> implements DAO<T> {
 
     private Class<T> cls;
+    public Class<T> getCls() { return cls; }
 
     public BaseDAO() { }
     public BaseDAO(Class<T> modelClass) {

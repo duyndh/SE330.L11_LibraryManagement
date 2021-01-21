@@ -11,5 +11,6 @@ import java.awt.event.ActionEvent;
 public class AuthorScene extends BaseScene {
     public AuthorScene() {
         super();
+        this.getTitleLb().setText("Author Management");
     }
 }

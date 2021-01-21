@@ -1,7 +1,7 @@
 package com.java.project;
 
 public final class InfoEntry {
-    private InfoEntry(String label, Class<?> cls, Object value) {
+    public InfoEntry(String label, Class<?> cls, Object value) {
         this.label = label;
         this.cls = cls;
         this.value = value;

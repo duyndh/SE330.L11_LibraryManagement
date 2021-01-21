@@ -1,7 +1,7 @@
 package data.Repositories;
 
 import data.DAOs.StaffDAO;
-import UI.Models.StaffModel;
+import UI.Models.DomainModels.StaffModel;
 
 public class StaffRepository extends BaseRepository<StaffModel> {
     public StaffRepository() {

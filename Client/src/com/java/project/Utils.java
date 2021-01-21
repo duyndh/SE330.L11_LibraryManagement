@@ -1,13 +1,17 @@
 package com.java.project;
 
+import UI.Models.DomainModels.*;
+import UI.Models.TableViewItemModel.*;
+import UIComponents.TextFieldWithTableSearch.TextFieldWithTableSearch;
+import data.Repositories.*;
 import org.jdatepicker.JDatePanel;
 import org.jdatepicker.JDatePicker;
 import org.jdatepicker.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.function.Consumer;
 
 public class Utils {
@@ -66,18 +70,29 @@ public class Utils {
         Utils.ShowMessageBox("Something wrong.", "Error", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void showInfo(String msg, String title) {
+        Utils.ShowMessageBox(msg, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showError(String e) {
+        Utils.ShowMessageBox(e, "Error", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static void createPopup(ArrayList<InfoEntry> infos, Consumer<ArrayList<Object>> finishHandler) {
         var panel = new JPanel(new GridLayout(0, 1));
         var uis = new ArrayList<Object>();
 
         for (var info: infos) {
-            if (info.getCls() == String.class) {
+            var cls = info.getCls();
+
+            if (cls == String.class) {
                 panel.add(new JLabel(info.getLabel()));
                 var textField = new JTextField("");
                 panel.add(textField);
+                textField.setHorizontalAlignment(SwingUtilities.RIGHT);
                 uis.add(textField);
             }
-            if (info.getCls() == int.class || info.getCls() == Integer.class) {
+            if (cls == int.class || info.getCls() == Integer.class) {
                 panel.add(new JLabel(info.getLabel()));
                 var model = new SpinnerNumberModel();
                 model.setMinimum(0);
@@ -86,12 +101,25 @@ public class Utils {
                 panel.add(numberUI);
                 uis.add(numberUI);
             }
-            if (info.getCls() == Date.class) {
+            if (cls == Date.class) {
                 panel.add(new JLabel(info.getLabel()));
                 UtilDateModel model = new UtilDateModel();
                 JDatePanel datePanel = new JDatePanel(model);
                 JDatePicker datePicker = new JDatePicker(model);
+                panel.add(datePicker);
                 uis.add(datePicker);
+            }
+
+            if (BaseModel.class.isAssignableFrom(cls)) {
+                panel.add(new JLabel(info.getLabel()));
+                var sp = createTextFieldWithSearchTableFrom(cls);
+
+                if (info.getValue() != null) {
+                    sp.getBackedTextField().setText(info.getValue().toString());
+                }
+
+                panel.add(sp);
+                uis.add(sp);
             }
         }
 
@@ -100,30 +128,36 @@ public class Utils {
         int result = JOptionPane.showConfirmDialog(
                 null,
                 panel,
-                "Add book",
+                "CREATE ITEM",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        var res = new ArrayList<Object>();
-        for (int i = 0; i < uis.size(); i++) {
-            var cls = infos.get(i).getCls();
-            if (cls == String.class) {
-                var ui = uis.get(0);
-                var r = ((JTextField)ui).getText();
-                res.add(r);
-            }
-            if (cls == int.class || cls == Integer.class) {
-                var ui = uis.get(0);
-                var r = ((JSpinner)ui).getValue();
-                res.add(r);
-            }
-            if (cls == Date.class) {
-                var ui = uis.get(0);
-                var r = ((JDatePicker)ui).getModel().getValue(); // return Date
-                res.add(r);
-            }
-        }
-
         if (result == JOptionPane.OK_OPTION) {
+            var res = new ArrayList<Object>();
+            for (int i = 0; i < uis.size(); i++) {
+                var cls = infos.get(i).getCls();
+                if (cls == String.class) {
+                    var ui = uis.get(i);
+                    var r = ((JTextField)ui).getText();
+                    res.add(r);
+                }
+                if (cls == int.class || cls == Integer.class) {
+                    var ui = uis.get(i);
+                    var r = ((JSpinner)ui).getValue();
+                    res.add(r);
+                }
+                if (cls == Date.class) {
+                    var ui = uis.get(i);
+                    var r = ((JDatePicker)ui).getModel().getValue(); // return Date
+                    res.add(r);
+                }
+                if (BaseModel.class.isAssignableFrom(cls)) {
+                    var ui = uis.get(i);
+                    var _r = ((TextFieldWithTableSearch)ui).getBackedTextField().getText();
+                    var r = Integer.parseInt(_r);
+                    res.add(r);
+                }
+
+            }
             finishHandler.accept(res);
         }
     }
@@ -134,11 +168,25 @@ public class Utils {
         var uis = new ArrayList<Object>();
 
         for (var info: infos) {
+
+            // Check Models first
+            if (BaseModel.class.isAssignableFrom(info.getCls())) {
+                panel.add(new JLabel(info.getLabel()));
+                var sp = createTextFieldWithSearchTableFrom(info.getCls());
+                var idString = info.getValue().toString();
+                sp.getBackedTextField().setText(idString);
+                panel.add(sp);
+                uis.add(sp);
+                continue;
+            }
+
+            // another types
             var cls = info.getValue().getClass();
             if (cls == String.class) {
                 panel.add(new JLabel(info.getLabel()));
                 var textField = new JTextField("");
                 textField.setText((String) info.getValue());
+                textField.setHorizontalAlignment(SwingConstants.RIGHT);
                 panel.add(textField);
                 uis.add(textField);
             }
@@ -160,6 +208,7 @@ public class Utils {
                 model.setValue((java.util.Date) info.getValue());
                 uis.add(datePicker);
             }
+
         }
 
 
@@ -167,35 +216,75 @@ public class Utils {
         int result = JOptionPane.showConfirmDialog(
                 null,
                 panel,
-                "Add book",
+                "UPDATE ITEM",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        var res = new ArrayList<Object>();
-        for (int i = 0; i < uis.size(); i++) {
-            var cls = infos.get(i).getCls();
-            if (cls == String.class) {
-                var ui = uis.get(0);
-                var r = ((JTextField)ui).getText();
-                res.add(r);
-            }
-            if (cls == int.class || cls == Integer.class) {
-                var ui = uis.get(0);
-                var r = ((JSpinner)ui).getValue();
-                res.add(r);
-            }
-            if (cls == Date.class) {
-                var ui = uis.get(0);
-                var r = ((JDatePicker)ui).getModel().getValue(); // return Date
-                res.add(r);
-            }
-        }
-
         if (result == JOptionPane.OK_OPTION) {
+            var res = new ArrayList<Object>();
+            for (int i = 0; i < uis.size(); i++) {
+                var cls = infos.get(i).getCls();
+                if (cls == String.class) {
+                    var ui = uis.get(0);
+                    var r = ((JTextField)ui).getText();
+                    res.add(r);
+                }
+                if (cls == int.class || cls == Integer.class) {
+                    var ui = uis.get(0);
+                    var r = ((JSpinner)ui).getValue();
+                    res.add(r);
+                }
+                if (cls == Date.class) {
+                    var ui = uis.get(0);
+                    var r = ((JDatePicker)ui).getModel().getValue(); // return Date
+                    res.add(r);
+                }
+                if (BaseModel.class.isAssignableFrom(cls)) {
+                    var ui = uis.get(i);
+                    var _r = ((TextFieldWithTableSearch)ui).getBackedTextField().getText();
+                    var r = Integer.parseInt(_r);
+                    res.add(r);
+                }
+            }
             finishHandler.accept(res);
         }
     }
 
 
+    private static TextFieldWithTableSearch createTextFieldWithSearchTableFrom(Class<?> cls) {
+        if (cls == BookModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new BookRepository(), BookRowItem.class);
+        }
+
+        if (cls == BookItemModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new BookItemRepository(), BookItemRowItem.class);
+        }
+
+        if (cls == CategoryModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new CategoryRepository(), CategoryRowItem.class);
+        }
+
+        if (cls == AuthorModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new AuthorRepository(), AuthorRowItem.class);
+        }
+
+        if (cls == MemberModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new MemberRepository(), MemberRowItem.class);
+        }
+
+        if (cls == StaffModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new StaffRepository(), StaffRowItem.class);
+        }
+
+        if (cls == WarehouseHistoryModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new WarehouseHistoryRepository(), WarehouseHistoryRowItem.class);
+        }
+
+        if (cls == BorrowHistoryModel.class) {
+            return new TextFieldWithTableSearch<BookRowItem>(new BorrowHistoryRepository(), BorrowHistoryRowItem.class);
+        }
+
+        return null;
+    }
 
 }
 

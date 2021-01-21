@@ -1,11 +1,12 @@
-package UI.Models;
+package UI.Models.DomainModels;
 
 import utils.DB.TableModel;
 
-@TableModel.Table(tableName="author")
-public class AuthorModel extends BaseModel {
 
-    public AuthorModel() {  }
+@TableModel.Table(tableName="category")
+public class CategoryModel extends BaseModel {
+
+    public CategoryModel() { }
 
     @TableModel.Column
     private int id;
@@ -28,5 +29,4 @@ public class AuthorModel extends BaseModel {
     public void setName(String name) {
         this.name = name;
     }
-
 }

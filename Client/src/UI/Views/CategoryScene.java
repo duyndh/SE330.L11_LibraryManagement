@@ -11,5 +11,6 @@ import java.awt.event.ActionEvent;
 public class CategoryScene extends BaseScene {
     public CategoryScene() {
         super();
+        this.getTitleLb().setText("Category Management");
     }
 }

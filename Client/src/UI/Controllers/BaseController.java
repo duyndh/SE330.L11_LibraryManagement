@@ -17,35 +17,35 @@ public abstract class BaseController {
 
     public BaseController(BaseScene scene) {
         this.scene = scene;
-        scene.addButton.addActionListener(new ActionListener() {
+        scene.getAddButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onCreateTapped();
             }
         });
 
-        scene.updateButton.addActionListener(new ActionListener() {
+        scene.getUpdateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onUpdatedTapped();
             }
         });
 
-        scene.deleteButton.addActionListener(new ActionListener() {
+        scene.getDeleteButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onDeleteTapped();
             }
         });
 
-        scene.searchButton.addActionListener(new ActionListener() {
+        scene.getSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onSearchButtonTapped(scene.searchTextField.getText());
+                onSearchButtonTapped(scene.getSearchTextField().getText());
             }
         });
 
-        scene.clearButton.addActionListener(new ActionListener() {
+        scene.getClearButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onClearButtonTapped();
@@ -62,6 +62,6 @@ public abstract class BaseController {
     abstract void onSearchButtonTapped(String searchText);
 
     void onClearButtonTapped() {
-        this.scene.searchTextField.setText("");
+        this.scene.getSearchTextField().setText("");
     };
 }

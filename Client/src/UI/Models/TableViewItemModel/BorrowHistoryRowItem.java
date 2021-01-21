@@ -1,6 +1,6 @@
 package UI.Models.TableViewItemModel;
 
-import UI.Models.BorrowHistoryModel;
+import UI.Models.DomainModels.BorrowHistoryModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
@@ -35,6 +35,7 @@ public class BorrowHistoryRowItem extends TableViewRowItem {
 
     private BorrowHistoryModel model;
 
+    @Override
     public int getId() {
         return id;
     }

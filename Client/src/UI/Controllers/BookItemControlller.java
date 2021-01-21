@@ -1,14 +1,18 @@
 package UI.Controllers;
 
-import UI.Models.BookItemModel;
+import UI.Models.DomainModels.*;
 import UI.Models.TableViewItemModel.BookItemRowItem;
 import UI.Views.BaseScene;
+import UI.Views.BookItemScene;
 import UIComponents.TableView.TableViewDelegate;
 import com.java.project.InfoEntry;
 import com.java.project.Utils;
 import data.Repositories.BookItemRepository;
+import data.Repositories.BorrowHistoryRepository;
 import utils.DB.TransformException;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +21,7 @@ public class BookItemControlller extends BaseController implements TableViewDele
 
     // private final BookItemScene booksScene;
     private final BookItemRepository bookItemRepository = new BookItemRepository();
+    private final BorrowHistoryRepository borrowHistoryRepository = new BorrowHistoryRepository();
     private final ArrayList<BookItemRowItem> bookItemRowItems = new ArrayList();
     // private BookItemRowItem selectedObject = null;
     private HashSet<BookItemRowItem> selectedObjects = new HashSet<BookItemRowItem>();
@@ -24,6 +29,16 @@ public class BookItemControlller extends BaseController implements TableViewDele
     public BookItemControlller(BaseScene scene) {
         super(scene);
         this.scene.setTableViewDelegate(this);
+
+        BookItemScene bScene = (BookItemScene)scene;
+        if (bScene != null) {
+            bScene.getBorrowBtn().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    onBorrowButtonTapped();
+                }
+            });
+        }
     }
 
 
@@ -63,7 +78,7 @@ public class BookItemControlller extends BaseController implements TableViewDele
     @Override
     void onCreateTapped() {
         InfoEntry[] infos = {
-                new InfoEntry("BOOK ID", int.class),
+                new InfoEntry("BOOK ID", BookModel.class),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
@@ -87,15 +102,14 @@ public class BookItemControlller extends BaseController implements TableViewDele
         var o = this.selectedObjects.stream().findFirst().get().getModel();
 
         InfoEntry[] infos = {
-                new InfoEntry("BOOK ID", o.getBook_id()),
+                new InfoEntry("BOOK ID", BookModel.class, o.getBook_id()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            var item = new BookItemModel();
-            item.setBook_id((int)res.get(0));
+            o.setBook_id((int)res.get(0));
             try {
-                this.bookItemRepository.update(item);
+                this.bookItemRepository.update(o);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -112,7 +126,7 @@ public class BookItemControlller extends BaseController implements TableViewDele
             try {
                 this.bookItemRepository.delete(id);
             } catch (SQLException throwables) {
-                Utils.showError();
+                Utils.showError(throwables.getMessage());
             }
         }
         this.reloadData();
@@ -167,6 +181,39 @@ public class BookItemControlller extends BaseController implements TableViewDele
         }
 
         this.scene.reloadTableData();
+    }
+
+    private void onBorrowButtonTapped() {
+        if (this.selectedObjects.size() <= 0) return;
+        var o = this.selectedObjects.stream().findFirst().get().getModel();
+
+        if (!o.isAvailable()) {
+            Utils.showInfo("This book has been borrowed.", "BORROWED");
+            return;
+        }
+
+        InfoEntry[] infos = {
+                new InfoEntry("BOOK ITEM ID", BookItemModel.class, o.getId()),
+                new InfoEntry("MEMBER ID", MemberModel.class),
+                new InfoEntry("STAFF ID", StaffModel.class),
+        };
+        var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
+
+        Utils.createPopup(arr, res -> {
+            var br = new BorrowHistoryModel();
+            br.setBookItemId((int)res.get(0));
+            br.setMemberId((int)res.get(1));
+            br.setStaffId((int)res.get(2));
+            try {
+                br = this.borrowHistoryRepository.create(br);
+                if (br.getId() != 0) {
+                    Utils.showInfo("Borrow success.", "SUCCESS");
+                }
+            } catch (TransformException | SQLException e) {
+                e.printStackTrace();
+                Utils.showError();
+            }
+        });
     }
 
     @Override

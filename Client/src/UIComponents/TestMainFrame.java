@@ -20,13 +20,10 @@ public class TestMainFrame extends Frame {
 
         var s = new BookItemScene();
         s.setBackground(Color.ORANGE);
-        s.tableView.setDelegate(new TableViewTestDelegate());
-        s.tableView.reloadData();
+        s.getTableView().setDelegate(new TableViewTestDelegate());
+        s.getTableView().reloadData();
         displayPanel.add(s);
         displayPanel.updateUI();
-
-//        this.tableView.setDelegate(new TableViewTestDelegate());
-//        this.tableView.reloadData();
     }
 }
 
@@ -36,6 +33,11 @@ class TestItem extends TableViewRowItem {
     public int id;
     @TableViewRowItemColumn(columnName = "This is Name")
     public String name;
+
+    @Override
+    public int getId() {
+        return id;
+    }
 }
 
 

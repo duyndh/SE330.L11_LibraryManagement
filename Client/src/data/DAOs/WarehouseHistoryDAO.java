@@ -1,6 +1,6 @@
 package data.DAOs;
 
-import UI.Models.WarehouseHistoryModel;
+import UI.Models.DomainModels.WarehouseHistoryModel;
 
 public class WarehouseHistoryDAO extends BaseDAO<WarehouseHistoryModel> {
     public WarehouseHistoryDAO() {

@@ -11,5 +11,6 @@ import java.awt.event.ActionEvent;
 public class WarehouseHistoryScene extends BaseScene {
     public WarehouseHistoryScene() {
         super();
+        this.getTitleLb().setText("Warehouse History Management");
     }
 }

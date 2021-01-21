@@ -1,4 +1,4 @@
-package UI.Models;
+package UI.Models.DomainModels;
 
 import utils.DB.TableModel;
 
@@ -9,6 +9,33 @@ public class WarehouseHistoryModel extends BaseModel {
 
     public WarehouseHistoryModel() {
     }
+
+    @TableModel.Column(columnName = "id")
+    private int id;
+
+    @TableModel.Column(columnName = "staff_id")
+    private int staffId;
+
+    @TableModel.NestedModel(refColumn = "staff_id")
+    private StaffModel staff;
+
+    @TableModel.Column(columnName = "book_item_id")
+    private int bookItemId;
+
+    @TableModel.NestedModel(refColumn = "book_item_id")
+    private BookItemModel bookItem;
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @TableModel.Column(columnName = "created_at")
+    private Date createdAt = new Date();
+
 
     public int getId() {
         return id;
@@ -49,33 +76,4 @@ public class WarehouseHistoryModel extends BaseModel {
     public void setBookItem(BookItemModel bookItem) {
         this.bookItem = bookItem;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @TableModel.Column(columnName = "id")
-    private int id;
-
-    @TableModel.Column(columnName = "staff_id")
-    private int staffId;
-
-    @TableModel.NestedModel(refColumn = "staff_id")
-    private StaffModel staff;
-
-    @TableModel.Column(columnName = "book_item_id")
-    private int bookItemId;
-
-    @TableModel.NestedModel(refColumn = "book_item_id")
-    private BookItemModel bookItem;
-
-    @TableModel.Column(columnName = "created_at")
-    private Date createdAt;
-
-
-
 }

@@ -1,6 +1,6 @@
 package UI.Models.TableViewItemModel;
 
-import UI.Models.BookModel;
+import UI.Models.DomainModels.BookModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
@@ -12,6 +12,7 @@ public class BookRowItem extends TableViewRowItem {
 
     private BookModel model;
 
+    @Override
     public int getId() {
         return id;
     }

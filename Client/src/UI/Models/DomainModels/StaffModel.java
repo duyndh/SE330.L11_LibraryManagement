@@ -1,4 +1,4 @@
-package UI.Models;
+package UI.Models.DomainModels;
 
 import utils.DB.TableModel;
 
@@ -14,7 +14,7 @@ public class StaffModel extends BaseModel {
     private int id;
 
     @TableModel.Column(columnName = "full_name")
-    private String fulName;
+    private String fullName;
 
     @TableModel.Column(columnName = "phone")
     private String phone;
@@ -22,17 +22,9 @@ public class StaffModel extends BaseModel {
     @TableModel.Column(columnName = "email")
     private String email;
 
-    @TableModel.Column(columnName = "gender")
-    private String gender;
 
     @TableModel.Column(columnName = "created_at")
-    private Date createdAt;
-
-    @TableModel.Column(columnName = "updated_at")
-    private Date updatedAt;
-
-    @TableModel.Column(columnName = "deleted_at")
-    private Date deletedAt;
+    private Date createdAt = new Date();
 
 
     public int getId() {
@@ -43,12 +35,12 @@ public class StaffModel extends BaseModel {
         this.id = id;
     }
 
-    public String getFulName() {
-        return fulName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFulName(String fulName) {
-        this.fulName = fulName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhone() {
@@ -67,13 +59,6 @@ public class StaffModel extends BaseModel {
         this.email = email;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -81,21 +66,5 @@ public class StaffModel extends BaseModel {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Date getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Date deletedAt) {
-        this.deletedAt = deletedAt;
     }
 }

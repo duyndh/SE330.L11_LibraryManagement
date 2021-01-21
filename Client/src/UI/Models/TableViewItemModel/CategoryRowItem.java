@@ -1,6 +1,6 @@
 package UI.Models.TableViewItemModel;
 
-import UI.Models.CategoryModel;
+import UI.Models.DomainModels.CategoryModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
@@ -10,6 +10,7 @@ public class CategoryRowItem extends TableViewRowItem {
         return model;
     }
 
+    @Override
     public int getId() {
         return id;
     }

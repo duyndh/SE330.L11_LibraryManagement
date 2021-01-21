@@ -1,16 +1,12 @@
 package UI.Controllers;
 
-import UI.Models.DomainModels.BookItemModel;
-import UI.Models.DomainModels.BookModel;
-import UI.Models.DomainModels.StaffModel;
-import UI.Models.DomainModels.WarehouseHistoryModel;
-import UI.Models.TableViewItemModel.WarehouseHistoryRowItem;
+import UI.Models.DomainModels.MemberModel;
+import UI.Models.TableViewItemModel.MemberRowItem;
 import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
 import com.java.project.InfoEntry;
 import com.java.project.Utils;
-import data.Repositories.BookItemRepository;
-import data.Repositories.WarehouseHistoryRepository;
+import data.Repositories.MemberRepository;
 import utils.DB.TransformException;
 
 import java.sql.SQLException;
@@ -20,14 +16,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-public class WarehouseHistoryController extends BaseController implements TableViewDelegate<WarehouseHistoryRowItem> {
+public class MemberController extends BaseController implements TableViewDelegate<MemberRowItem> {
 
-    private final WarehouseHistoryRepository repository = new WarehouseHistoryRepository();
-    private final BookItemRepository bookItemRepository = new BookItemRepository();
-    private final ArrayList<WarehouseHistoryRowItem> rowItems = new ArrayList();
-    private HashSet<WarehouseHistoryRowItem> selectedObjects = new HashSet<>();
+    private final MemberRepository repository = new MemberRepository();
+    private final ArrayList<MemberRowItem> rowItems = new ArrayList();
+    private final HashSet<MemberRowItem> selectedObjects = new HashSet<>();
 
-    public WarehouseHistoryController(BaseScene scene) {
+    public MemberController(BaseScene scene) {
         super(scene);
         this.scene.setTableViewDelegate(this);
     }
@@ -50,7 +45,7 @@ public class WarehouseHistoryController extends BaseController implements TableV
             this.rowItems.addAll(this.repository
                     .getAll()
                     .stream()
-                    .map(WarehouseHistoryRowItem::new)
+                    .map(MemberRowItem::new)
                     .collect(Collectors.toList()));
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
@@ -58,7 +53,7 @@ public class WarehouseHistoryController extends BaseController implements TableV
         }
 
         if (rowItems.size() == 0) {
-            var item = new WarehouseHistoryRowItem();
+            var item = new MemberRowItem();
             rowItems.add(item);
         }
 
@@ -69,31 +64,22 @@ public class WarehouseHistoryController extends BaseController implements TableV
     @Override
     void onCreateTapped() {
         InfoEntry[] infos = {
-                new InfoEntry("STAFF ID", StaffModel.class),
-                new InfoEntry("BOOK ID", BookModel.class),
-                new InfoEntry("AMOUNT", Integer.class),
+                new InfoEntry("FULLNAME", String.class),
+                new InfoEntry("PHONE", String.class),
+                new InfoEntry("EMAIL", String.class)
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.createPopup(arr, res -> {
-            // var item = new WarehouseHistoryModel();
-            // item.setStaffId((Integer) res.get(0));
-            // item.setBookItemId((Integer)res.get(1));
-            var bookId = (Integer)res.get(1);
-            var amount = (Integer)res.get(2);
-            for (var i = 0; i < amount; i++) {
-                var b = new BookItemModel();
-                b.setBook_id(bookId);
-                try {
-                    b = this.bookItemRepository.create(b);
-                    var w = new WarehouseHistoryModel();
-                    w.setStaffId((Integer) res.get(0));
-                    w.setBookItemId(b.getId());
-                    this.repository.create(w);
-                } catch (TransformException | SQLException e) {
-                    e.printStackTrace();
-                    Utils.showError(e.getMessage());
-                }
+            var item = new MemberModel();
+            item.setFullName((String)res.get(0));
+            item.setPhone((String)res.get(1));
+            item.setEmail((String)res.get(2));
+            try {
+                this.repository.create(item);
+            } catch (TransformException | SQLException e) {
+                e.printStackTrace();
+                Utils.showError();
             }
         });
 
@@ -106,16 +92,20 @@ public class WarehouseHistoryController extends BaseController implements TableV
         var o = this.selectedObjects.stream().findFirst().get().getModel();
 
         InfoEntry[] infos = {
-                new InfoEntry("STAFF ID", StaffModel.class, o.getStaffId()),
-                new InfoEntry("BOOK ITEM ID", BookItemModel.class, o.getBookItemId()),
+                new InfoEntry("MEMBER NAME", o.getFullName()),
+                new InfoEntry("MEMBER PHONE", o.getPhone()),
+                new InfoEntry("MEMBER EMAIL", o.getEmail()),
                 new InfoEntry("CREATED AT", o.getCreatedAt()),
+                new InfoEntry("EXPIRED AT", o.getExpiredAt()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            o.setStaffId((Integer) res.get(0));
-            o.setBookItemId((Integer)res.get(1));
-            o.setCreatedAt((Date)res.get(2));
+            o.setFullName((String)res.get(0));
+            o.setPhone((String)res.get(1));
+            o.setEmail((String)res.get(2));
+            o.setCreatedAt((Date)res.get(3));
+            o.setExpiredAt((Date) res.get(4));
             try {
                 this.repository.update(o);
             } catch (TransformException | SQLException e) {
@@ -151,11 +141,11 @@ public class WarehouseHistoryController extends BaseController implements TableV
 
     @Override
     public Class<?> rowItemClass() {
-        return WarehouseHistoryRowItem.class;
+        return MemberRowItem.class;
     }
 
     @Override
-    public WarehouseHistoryRowItem itemAt(int row) {
+    public MemberRowItem itemAt(int row) {
         return this.rowItems.get(row);
     }
 
@@ -176,7 +166,7 @@ public class WarehouseHistoryController extends BaseController implements TableV
             this.rowItems.addAll(this.repository
                     .searchName(searchText)
                     .stream()
-                    .map(WarehouseHistoryRowItem::new)
+                    .map(MemberRowItem::new)
                     .collect(Collectors.toList()));
         } catch (TransformException | SQLException e) {
             e.printStackTrace();
@@ -184,7 +174,7 @@ public class WarehouseHistoryController extends BaseController implements TableV
         }
 
         if (rowItems.size() == 0) {
-            var item = new WarehouseHistoryRowItem();
+            var item = new MemberRowItem();
             rowItems.add(item);
         }
 

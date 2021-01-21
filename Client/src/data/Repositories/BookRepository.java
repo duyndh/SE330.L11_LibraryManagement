@@ -1,6 +1,6 @@
 package data.Repositories;
 
-import UI.Models.BookModel;
+import UI.Models.DomainModels.BookModel;
 import data.DAOs.BookDAO;
 
 public class BookRepository extends BaseRepository<BookModel> {

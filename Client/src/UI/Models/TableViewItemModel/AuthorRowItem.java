@@ -1,6 +1,6 @@
 package UI.Models.TableViewItemModel;
 
-import UI.Models.AuthorModel;
+import UI.Models.DomainModels.AuthorModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
@@ -10,6 +10,7 @@ public class AuthorRowItem extends TableViewRowItem {
         return model;
     }
 
+    @Override
     public int getId() {
         return id;
     }

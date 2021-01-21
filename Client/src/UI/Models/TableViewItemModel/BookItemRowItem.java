@@ -1,10 +1,11 @@
 package UI.Models.TableViewItemModel;
 
-import UI.Models.BookItemModel;
+import UI.Models.DomainModels.BookItemModel;
 import UIComponents.TableView.TableViewRowItem;
 import UIComponents.TableView.TableViewRowItemColumn;
 
 public class BookItemRowItem extends TableViewRowItem {
+    @Override
     public int getId() {
         return id;
     }
@@ -33,6 +34,13 @@ public class BookItemRowItem extends TableViewRowItem {
     @TableViewRowItemColumn(columnName = "Category")
     private String category = null;
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    @TableViewRowItemColumn(columnName = "Available")
+    private boolean isAvailable = true;
+
     private BookItemModel model;
 
     public BookItemModel getModel() { return model; }
@@ -42,6 +50,7 @@ public class BookItemRowItem extends TableViewRowItem {
         this.name = bookItem.getBook().getName();
         this.author = bookItem.getBook().getAuthor().getName();
         this.category = bookItem.getBook().getCategory().getName();
+        this.isAvailable = bookItem.isAvailable();
         this.model = bookItem;
     }
 

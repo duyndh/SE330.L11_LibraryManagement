@@ -1,4 +1,4 @@
-package UI.Models;
+package UI.Models.DomainModels;
 
 import utils.DB.TableModel;
 
@@ -32,7 +32,7 @@ public class BorrowHistoryModel extends BaseModel {
     private BookItemModel bookItem;
 
     @TableModel.Column(columnName="borrowed_at")
-    private Date borrowedAt;
+    private Date borrowedAt = new Date();
 
     @TableModel.Column(columnName="returned_at")
     private Date returnedAt;

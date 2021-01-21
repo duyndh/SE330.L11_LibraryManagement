@@ -1,6 +1,6 @@
 package utils.DB;
 
-import UI.Models.BaseModel;
+import UI.Models.DomainModels.BaseModel;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -114,14 +114,23 @@ public class DBUtils {
             var fieldMap = getFieldMap(targetObject);
             var tableName = cls.getAnnotation(TableModel.Table.class).tableName();
 
-            var updateStatements = fieldMap.entrySet().stream().map(entry -> {
-                var valueEntry = entry.getValue();
-                var valueExpression = parseToSqlValueExpression(valueEntry.getValue(), valueEntry.getKey());
-                return String.format("%s=%s", entry.getValue(), valueExpression);
-            }).collect(Collectors.toList());
+            var updateStatements = fieldMap.entrySet().stream()
+                    .filter(entry -> {
+                        return entry.getValue() != null;
+                    })
+                    .map(entry -> {
+                        var valueEntry = entry.getValue();
+                        var valueExpression = parseToSqlValueExpression(valueEntry.getValue(), valueEntry.getKey());
+                        return String.format("%s=%s", entry.getKey(), valueExpression);
+                    }).collect(Collectors.toList());
 
             var pattern = " UPDATE %s SET %s WHERE %s;";
-            return String.format(pattern, tableName, String.join(",", updateStatements));
+            // id
+            Field field = cls.getDeclaredField("id"); //Note, this can throw an exception if the field doesn't exist.
+            field.setAccessible(true);
+            var id = field.getInt(targetObject);
+            var whereClause = "id=" + id;
+            return String.format(pattern, tableName, String.join(",", updateStatements), whereClause);
 
         } catch (Exception ex) {
             throw new TransformException("Cannot serialize.");
@@ -271,10 +280,18 @@ public class DBUtils {
             var tableName = cls.getAnnotation(TableModel.Table.class).tableName();
 
             // Query string
-            var keys = String.join(",", fieldMap.keySet());
-            var values = fieldMap.values().stream().map(entry -> {
-                return parseToSqlValueExpression(entry.getValue(), entry.getKey());
-            }).collect(Collectors.toList());
+            var keyArr = new ArrayList<String>();
+            var values = fieldMap.entrySet().stream()
+                    .filter(entry -> {
+                        var ent = entry.getValue();
+                        return ent.getValue() != null;
+                    })
+                    .map(entry -> {
+                        var ent = entry.getValue();
+                        keyArr.add(entry.getKey());
+                        return parseToSqlValueExpression(ent.getValue(), ent.getKey());
+                    }).collect(Collectors.toList());
+            var keys = String.join(",", keyArr);
 
             return new StringBuilder().append("INSERT INTO ")
                     .append(tableName)
@@ -303,7 +320,7 @@ public class DBUtils {
                 if (anno instanceof TableModel.Column) {
                     var fieldType = field.getType();
                     var fieldValue = field.get(targetObject);
-                    var fieldName = field.getName();
+                    var fieldName = ((TableModel.Column) anno).columnName();
                     var entry = new FieldEntry(fieldType, fieldValue);
                     if (!fieldName.equals("id")) {
                         fieldMap.put(fieldName, entry);
@@ -408,7 +425,7 @@ public class DBUtils {
         }
 
         if (cls == Date.class) {
-            var pattern = "yyyy-MM-dd HH:mm:ss";
+            var pattern = "\"" + "yyyy-MM-dd HH:mm:ss" + "\"";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             var v = (Date)value;
             return simpleDateFormat.format(v);

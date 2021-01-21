@@ -1,6 +1,6 @@
 package data.DAOs;
 
-import UI.Models.BookItemModel;
+import UI.Models.DomainModels.BookItemModel;
 
 public class BookItemDAO extends BaseDAO<BookItemModel> {
     public BookItemDAO() {

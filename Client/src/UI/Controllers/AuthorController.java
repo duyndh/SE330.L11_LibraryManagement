@@ -1,6 +1,6 @@
 package UI.Controllers;
 
-import UI.Models.AuthorModel;
+import UI.Models.DomainModels.AuthorModel;
 import UI.Models.TableViewItemModel.AuthorRowItem;
 import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
@@ -92,10 +92,10 @@ public class AuthorController extends BaseController implements TableViewDelegat
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            var item = new AuthorModel();
-            item.setName((String)res.get(0));
+            // var item = new AuthorModel();
+            o.setName((String)res.get(0));
             try {
-                this.repository.update(item);
+                this.repository.update(o);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -112,7 +112,7 @@ public class AuthorController extends BaseController implements TableViewDelegat
             try {
                 this.repository.delete(id);
             } catch (SQLException throwables) {
-                Utils.showError();
+                Utils.showError(throwables.getMessage());
             }
         }
         this.reloadData();

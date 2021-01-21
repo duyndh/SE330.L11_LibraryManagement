@@ -1,17 +1,24 @@
 package data.Repositories;
 
 import data.DAOs.BaseDAO;
-import UI.Models.BaseModel;
+import UI.Models.DomainModels.BaseModel;
 import utils.DB.TransformException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-abstract class BaseRepository<T extends BaseModel> {
+public abstract class BaseRepository<T extends BaseModel> {
     protected BaseDAO<T> modelDAO;
+
+    public Class<T> getBackingModelClz() {
+        return backingModelCls;
+    }
+
+    protected Class<T> backingModelCls;
 
     public BaseRepository(BaseDAO<T> modelDAO) {
         this.modelDAO = modelDAO;
+        this.backingModelCls = modelDAO.getCls();
     }
 
     public T create(T model) throws TransformException, SQLException {
@@ -47,6 +54,5 @@ abstract class BaseRepository<T extends BaseModel> {
             builder.where(query);
         });
     }
-
 
 }

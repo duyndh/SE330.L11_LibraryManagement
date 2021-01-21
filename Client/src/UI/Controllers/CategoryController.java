@@ -1,6 +1,6 @@
 package UI.Controllers;
 
-import UI.Models.CategoryModel;
+import UI.Models.DomainModels.CategoryModel;
 import UI.Models.TableViewItemModel.CategoryRowItem;
 import UI.Views.BaseScene;
 import UIComponents.TableView.TableViewDelegate;
@@ -92,10 +92,9 @@ public class CategoryController extends BaseController implements TableViewDeleg
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
         Utils.updatePopup(arr, res -> {
-            var item = new CategoryModel();
-            item.setName((String)res.get(0));
+            o.setName((String)res.get(0));
             try {
-                this.repository.update(item);
+                this.repository.update(o);
             } catch (TransformException | SQLException e) {
                 e.printStackTrace();
                 Utils.showError();
@@ -112,7 +111,7 @@ public class CategoryController extends BaseController implements TableViewDeleg
             try {
                 this.repository.delete(id);
             } catch (SQLException throwables) {
-                Utils.showError();
+                Utils.showError(throwables.getMessage());
             }
         }
         this.reloadData();

@@ -11,5 +11,6 @@ import java.awt.event.ActionEvent;
 public class BookScene extends BaseScene {
     public BookScene() {
         super();
+        this.getTitleLb().setText("Book Management");
     }
 }

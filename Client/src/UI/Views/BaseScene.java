@@ -12,15 +12,32 @@ public abstract class BaseScene extends JPanel {
     protected JPanel rootPanel;
     protected JPanel tablePanel;
     protected JPanel headerPanel;
-    private JPanel bottomPanel;
-    public JButton addButton;
-    public JButton updateButton;
-    public JButton deleteButton;
-    private JPanel searchPanel;
-    public JTextField searchTextField;
-    public JButton searchButton;
-    public JButton clearButton;
-    public TableView tableView = new TableView();
+    protected JPanel bottomPanel;
+    protected JButton addButton;
+    protected JButton updateButton;
+    protected JButton deleteButton;
+    protected JPanel searchPanel;
+    protected JTextField searchTextField;
+    protected JButton searchButton;
+    protected JButton clearButton;
+    private JPanel moreButtonPanel;
+
+    public JLabel getTitleLb() {
+        return titleLb;
+    }
+
+    public void setTitleLb(JLabel titleLb) {
+        this.titleLb = titleLb;
+    }
+
+    private JLabel titleLb;
+
+    public JPanel getBelowSearchPanel() {
+        return belowSearchPanel;
+    }
+
+    private JPanel belowSearchPanel;
+    protected TableView tableView = new TableView();
 
     public void reloadTableData() {
         this.tableView.reloadData();
@@ -34,5 +51,63 @@ public abstract class BaseScene extends JPanel {
         add(rootPanel);
         tablePanel.setLayout(new CardLayout());
         tablePanel.add(tableView);
+        moreButtonPanel.setLayout(new GridLayout(0, 1, 10, 10));
     }
+
+    public JPanel getRootPanel() {
+        return rootPanel;
+    }
+
+    public JPanel getTablePanel() {
+        return tablePanel;
+    }
+
+    public JPanel getHeaderPanel() {
+        return headerPanel;
+    }
+
+    public JPanel getBottomPanel() {
+        return bottomPanel;
+    }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
+    public JButton getUpdateButton() {
+        return updateButton;
+    }
+
+    public JButton getDeleteButton() {
+        return deleteButton;
+    }
+
+    public JPanel getSearchPanel() {
+        return searchPanel;
+    }
+
+    public JTextField getSearchTextField() {
+        return searchTextField;
+    }
+
+    public JButton getSearchButton() {
+        return searchButton;
+    }
+
+    public JButton getClearButton() {
+        return clearButton;
+    }
+
+    public TableView getTableView() {
+        return tableView;
+    }
+
+    public JPanel getMoreButtonPanel() {
+        return moreButtonPanel;
+    }
+
+    public void setMoreButtonPanel(JPanel moreButtonPanel) {
+        this.moreButtonPanel = moreButtonPanel;
+    }
+
 }

@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 public class TableView extends JPanel {
 
+    public JTable getTable() {
+        return table;
+    }
+
     private final JTable table = new JTable();
     private final JScrollPane scrollPane;
     private final CustomTableViewModel tableModel;
@@ -30,23 +34,20 @@ public class TableView extends JPanel {
     private TableViewDelegate delegate = null;
 
     public TableView() {
-        super(new BorderLayout());
-        setLayout(new BorderLayout());
-        this.scrollPane = new JScrollPane(this.table);
-        // this.scrollPane.setPreferredSize(new Dimension(640, 450));
-        // this.table.setPreferredSize(new Dimension(640, 450));
+        super(new GridLayout());
+        setLayout(new GridLayout());
         this.tableModel = new CustomTableViewModel(() -> {
             return this.delegate;
         });
-
         this.table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
                 delegate.tableViewDidSelectRow(table.getSelectedRows());
             }
         });
-
         this.table.setModel(this.tableModel);
-        this.add(scrollPane, BorderLayout.CENTER);
+
+        this.scrollPane = new JScrollPane(this.table);
+        this.add(scrollPane);
     }
 
     public void reloadData() {
