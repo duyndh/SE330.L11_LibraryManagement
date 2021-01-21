@@ -45,7 +45,6 @@ public class TableView extends JPanel {
             }
         });
         this.table.setModel(this.tableModel);
-
         this.scrollPane = new JScrollPane(this.table);
         this.add(scrollPane);
     }

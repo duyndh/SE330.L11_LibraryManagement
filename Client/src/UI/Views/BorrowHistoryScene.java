@@ -51,7 +51,7 @@ public class BorrowHistoryScene extends BaseScene {
 
         this.returnBtn = new JButton();
         returnBtn.setPreferredSize(new Dimension(10, 10));
-        returnBtn.setLabel("Borrow");
+        returnBtn.setLabel("Return");
         getMoreButtonPanel().add(returnBtn);
     }
 }

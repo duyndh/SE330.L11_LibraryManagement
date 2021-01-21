@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
         add(rootPanel);
         setVisible(true);
 
-        scencePanel.setLayout(cardLayout);
+        scencePanel.setLayout(new GridLayout());
 
         scencePanel.setBackground(Color.cyan);
         scencePanel.add(scenes[0]);

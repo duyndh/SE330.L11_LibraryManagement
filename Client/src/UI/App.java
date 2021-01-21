@@ -15,25 +15,29 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                var loginPane = new LoginPanel();
-                var loginFrame = new JFrame();
-                loginFrame.setLayout(new GridLayout());
-                loginFrame.getContentPane().add(loginPane.get_panel());
-                loginFrame.pack();
-                loginFrame.setSize(new Dimension(320, 150));
-                loginFrame.setVisible(true);
-
-                loginPane.setLoginResultHandler(res -> {
-                    if (res) {
-                        var mainFrame = new MainFrame();
-                        mainFrame.pack();
-                        mainFrame.setSize(new Dimension(850, 600));
-                        loginFrame.setVisible(false);
-                        mainFrame.setVisible(true);
-                    } else {
-                        Utils.showError("Wrong username or password.");
-                    }
-                });
+//                var loginPane = new LoginPanel();
+//                var loginFrame = new JFrame();
+//                loginFrame.setLayout(new GridLayout());
+//                loginFrame.getContentPane().add(loginPane.get_panel());
+//                loginFrame.pack();
+//                loginFrame.setSize(new Dimension(320, 150));
+//                loginFrame.setVisible(true);
+//
+//                loginPane.setLoginResultHandler(res -> {
+//                    if (res) {
+//                        var mainFrame = new MainFrame();
+//                        mainFrame.pack();
+//                        mainFrame.setSize(new Dimension(950, 600));
+//                        loginFrame.setVisible(false);
+//                        mainFrame.setVisible(true);
+//                    } else {
+//                        Utils.showError("Wrong username or password.");
+//                    }
+//                });
+                var mainFrame = new MainFrame();
+                mainFrame.pack();
+                mainFrame.setSize(new Dimension(900, 600));
+                mainFrame.setVisible(true);
             }
         });
     }

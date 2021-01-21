@@ -49,7 +49,7 @@ public abstract class BaseScene extends JPanel {
 
     public BaseScene() {
         add(rootPanel);
-        tablePanel.setLayout(new CardLayout());
+        tablePanel.setLayout(new GridLayout());
         tablePanel.add(tableView);
         moreButtonPanel.setLayout(new GridLayout(0, 1, 10, 10));
     }
