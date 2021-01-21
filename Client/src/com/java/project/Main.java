@@ -2,9 +2,13 @@ package com.java.project;
 
 import com.java.panels.Home;
 import com.java.panels.LoginPanel;
+import com.java.utils.AppUtils;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class Main {
 
@@ -13,19 +17,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //var loginPanel = new Login();
-        //loginPanel
-
-        JFrame frame = new JFrame("Login");
-        frame.setContentPane(new LoginPanel().get_panel());
-        frame.setVisible(true);
-        frame.setSize(300, 200);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+        boolean isEmail = AppUtils.validateEmail("aaaaa@gmail.com");
+        boolean isPhone = AppUtils.validatePhoneNumber("0966534123");
         return;
 
-//        var p = new GridBagLayout();
 //
 //        var frame = new JFrame("Library Management");
 //        frame.setContentPane(_home.get_homePanel());

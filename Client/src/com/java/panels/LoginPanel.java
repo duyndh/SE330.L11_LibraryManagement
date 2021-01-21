@@ -10,7 +10,6 @@ public class LoginPanel {
     public LoginPanel() {
 
         _panel = new JPanel(new GridBagLayout());
-        //pane.
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 10;
