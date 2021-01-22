@@ -214,6 +214,7 @@ public class BookItemControlller extends BaseController implements TableViewDele
                 Utils.showError();
             }
         });
+        this.reloadData();
     }
 
     @Override

@@ -75,13 +75,13 @@ public class MemberController extends BaseController implements TableViewDelegat
 
             // Validate
             var phone = (String)res.get(1);
-            if (AppUtils.validatePhoneNumber(phone)) {
+            if (!AppUtils.validatePhoneNumber(phone)) {
                 Utils.showError("Invalid phone number.");
                 onCreateTapped();
                 return;
             }
             var email = (String)res.get(2);
-            if (AppUtils.validateEmail(email)) {
+            if (!AppUtils.validateEmail(email)) {
                 Utils.showError("Invalid email number.");
                 onCreateTapped();
                 return;

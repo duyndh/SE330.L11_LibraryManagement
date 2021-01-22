@@ -5,6 +5,7 @@ import UI.Models.DomainModels.StaffModel;
 import utils.DB.TransformException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class StaffRepository extends BaseRepository<StaffModel> {
     public StaffRepository() {
@@ -24,5 +25,14 @@ public class StaffRepository extends BaseRepository<StaffModel> {
             throwables.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public ArrayList<StaffModel> searchName(String name) throws TransformException, SQLException {
+        return modelDAO.selectAll(builder -> {
+            var tableName = modelDAO.tableName();
+            var query = "LOWER(" + tableName + ".full_name) LIKE" + "'%" + name.toLowerCase() + "%'";
+            builder.where(query);
+        });
     }
 }

@@ -34,8 +34,11 @@ public class BookItemRowItem extends TableViewRowItem {
     @TableViewRowItemColumn(columnName = "Category")
     private String category = null;
 
-    public boolean isAvailable() {
-        return isAvailable;
+    // public boolean isAvailable() {
+//        return isAvailable;
+//    }
+    public String isAvailable() {
+        return isAvailable ? "TRUE" : "FALSE";
     }
 
     @TableViewRowItemColumn(columnName = "Available")

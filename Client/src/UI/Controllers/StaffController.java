@@ -67,7 +67,8 @@ public class StaffController extends BaseController implements TableViewDelegate
         InfoEntry[] infos = {
                 new InfoEntry("FULLNAME", String.class),
                 new InfoEntry("PHONE", String.class),
-                new InfoEntry("EMAIL", String.class)
+                new InfoEntry("EMAIL", String.class),
+                new InfoEntry("PASSWORD", String.class)
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
 
@@ -75,13 +76,13 @@ public class StaffController extends BaseController implements TableViewDelegate
 
             // Validate
             var phone = (String)res.get(1);
-            if (AppUtils.validatePhoneNumber(phone)) {
+            if (!AppUtils.validatePhoneNumber(phone)) {
                 Utils.showError("Invalid phone number.");
                 onCreateTapped();
                 return;
             }
             var email = (String)res.get(2);
-            if (AppUtils.validateEmail(email)) {
+            if (!AppUtils.validateEmail(email)) {
                 Utils.showError("Invalid email number.");
                 onCreateTapped();
                 return;
@@ -93,6 +94,7 @@ public class StaffController extends BaseController implements TableViewDelegate
             item.setFullName((String)res.get(0));
             item.setPhone((String)res.get(1));
             item.setEmail((String)res.get(2));
+            item.setPassword((String)res.get(3));
             try {
                 this.repository.create(item);
             } catch (TransformException | SQLException e) {
@@ -110,9 +112,10 @@ public class StaffController extends BaseController implements TableViewDelegate
         var o = this.selectedObjects.stream().findFirst().get().getModel();
 
         InfoEntry[] infos = {
-                new InfoEntry("MEMBER NAME", o.getFullName()),
-                new InfoEntry("MEMBER PHONE", o.getPhone()),
-                new InfoEntry("MEMBER EMAIL", o.getEmail()),
+                new InfoEntry("STAFF NAME", o.getFullName()),
+                new InfoEntry("STAFF PHONE", o.getPhone()),
+                new InfoEntry("STAFF EMAIL", o.getEmail()),
+                new InfoEntry("STAFF PASSWORD", o.getPassword()),
                 new InfoEntry("CREATED AT", o.getCreatedAt()),
         };
         var arr = new ArrayList<InfoEntry>(Arrays.asList(infos));
@@ -121,13 +124,13 @@ public class StaffController extends BaseController implements TableViewDelegate
 
             // Validate
             var phone = (String)res.get(1);
-            if (AppUtils.validatePhoneNumber(phone)) {
+            if (!AppUtils.validatePhoneNumber(phone)) {
                 Utils.showError("Invalid phone number.");
                 onUpdatedTapped();
                 return;
             }
             var email = (String)res.get(2);
-            if (AppUtils.validateEmail(email)) {
+            if (!AppUtils.validateEmail(email)) {
                 Utils.showError("Invalid email number.");
                 onUpdatedTapped();
                 return;
@@ -139,7 +142,8 @@ public class StaffController extends BaseController implements TableViewDelegate
             o.setFullName((String)res.get(0));
             o.setPhone((String)res.get(1));
             o.setEmail((String)res.get(2));
-            o.setCreatedAt((Date)res.get(3));
+            o.setPassword((String)res.get(3));
+            o.setCreatedAt((Date)res.get(4));
             try {
                 this.repository.update(o);
             } catch (TransformException | SQLException e) {

@@ -51,7 +51,7 @@ public class LoginPanel {
         constraints.gridy = 1;
         _panel.add(passwordLabel, constraints);
 
-        var passwordTextField = new JTextField();
+        var passwordTextField = new JPasswordField();
         constraints.gridwidth = 1;
         constraints.gridx = 1;
         constraints.gridy = 1;

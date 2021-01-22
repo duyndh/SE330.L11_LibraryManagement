@@ -8,10 +8,10 @@ public class CategoryModel extends BaseModel {
 
     public CategoryModel() { }
 
-    @TableModel.Column
+    @TableModel.Column(columnName = "id")
     private int id;
 
-    @TableModel.Column
+    @TableModel.Column(columnName = "name")
     private String name;
 
     public int getId() {

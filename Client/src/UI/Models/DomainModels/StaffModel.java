@@ -53,6 +53,10 @@ public class StaffModel extends BaseModel {
         return phone;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
